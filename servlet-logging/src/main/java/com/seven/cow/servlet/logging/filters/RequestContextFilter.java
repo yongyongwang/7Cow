@@ -1,7 +1,9 @@
 package com.seven.cow.servlet.logging.filters;
 
+import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.FileCopyUtils;
@@ -10,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +31,9 @@ import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
  * @version: 1.0
  */
 public class RequestContextFilter extends OncePerRequestFilter implements Ordered {
+
+    @Resource
+    private LoggingProperties loggingProperties;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
