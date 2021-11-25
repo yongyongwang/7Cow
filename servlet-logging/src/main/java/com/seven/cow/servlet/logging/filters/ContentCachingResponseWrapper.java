@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 class ContentCachingResponseWrapper extends org.springframework.web.util.ContentCachingResponseWrapper {
 
-    private int status;
+    private int status = 200;
 
     private final boolean alwaysOk;
 
