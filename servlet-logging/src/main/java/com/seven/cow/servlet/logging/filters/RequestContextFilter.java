@@ -112,6 +112,6 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
 
     @Override
     public int getOrder() {
-        return 0;
+        return loggingProperties.getOrder();
     }
 }
