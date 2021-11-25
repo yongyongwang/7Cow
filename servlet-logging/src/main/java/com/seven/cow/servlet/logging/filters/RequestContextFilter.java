@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
 
@@ -60,9 +61,12 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             CurrentContext.set(X_CURRENT_HEADERS + SPLIT_COLON + headName, httpServletRequest.getHeader(headName));
         }
         Enumeration<String> parameterNames = httpServletRequest.getParameterNames();
+        List<String> parameters = new ArrayList<>();
         while (parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
-            CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, String.join(",", Arrays.asList(httpServletRequest.getParameterValues(parameterName))));
+            String parameterValue = String.join(",", Arrays.asList(httpServletRequest.getParameterValues(parameterName)));
+            parameters.add((parameterName + "=" + parameterValue));
+            CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, parameterValue);
         }
         // endregion 读取请求参数
 
@@ -77,7 +81,13 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 reqBytes = FileCopyUtils.copyToByteArray(cachingRequestWrapper.getInputStream());
             }
             CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
-            LoggerUtils.info("------ > Request Payload: " + new String(reqBytes, cachingRequestWrapper.getCharacterEncoding()));
+            if (!CollectionUtils.isEmpty(parameters)) {
+                LoggerUtils.info("------ > Request Parameters: " + parameters.stream().collect(Collectors.joining("&")));
+            }
+            String payload = new String(reqBytes, cachingRequestWrapper.getCharacterEncoding());
+            if (!StringUtils.isEmpty(payload)) {
+                LoggerUtils.info("------ > Request Payload: " + payload);
+            }
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
             if (CurrentContext.existsKey(X_CURRENT_REQUEST_REST_INPUT)) {
                 LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_INPUT));
