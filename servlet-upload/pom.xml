@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>servlet-logging</artifactId>
+    <artifactId>servlet-upload</artifactId>
 
     <dependencies>
         <dependency>
@@ -23,10 +23,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
             <optional>true</optional>
         </dependency>
@@ -36,4 +32,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+
 </project>

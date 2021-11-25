@@ -1,7 +1,9 @@
 package com.seven.cow.servlet.logging.aop;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
+import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,6 +29,8 @@ import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.X_CURRENT_R
 @Order(-2)
 public class RequestAspect {
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping) " +
             "&& !@annotation(IgnoreLogging)")
     public void getMappingPoint() {
@@ -47,13 +51,21 @@ public class RequestAspect {
     public Object around(ProceedingJoinPoint point) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+
         CurrentContext.set(X_CURRENT_REQUEST_REST_INPUT, "------ > Rest Input: " + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs())
                 .filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse
                         || o instanceof MultipartFile))
-                .map(JSON::toJSONString).collect(Collectors.joining(" | "))));
+                .map(o -> {
+                    try {
+                        return objectMapper.writeValueAsString(0);
+                    } catch (JsonProcessingException e) {
+                        LoggerUtils.error("rest controller cast to json exception:", e);
+                    }
+                    return "";
+                }).collect(Collectors.joining(" | "))));
         Object result = point.proceed();
         stopWatch.stop();
-        CurrentContext.set(X_CURRENT_REQUEST_REST_OUTPUT, "< ------ Rest Output: " + ((null == result) ? "null" : JSON.toJSONString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
+        CurrentContext.set(X_CURRENT_REQUEST_REST_OUTPUT, "< ------ Rest Output: " + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
         return result;
     }
 

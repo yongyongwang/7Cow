@@ -11,6 +11,8 @@
         <module>7Cow-spring-boot-starter</module>
         <module>7Cow-spring-boot-autoconfigure</module>
         <module>servlet-logging</module>
+        <module>servlet-upload</module>
+        <module>servlet-download</module>
     </modules>
     <packaging>pom</packaging>
     <name>7Cow</name>
