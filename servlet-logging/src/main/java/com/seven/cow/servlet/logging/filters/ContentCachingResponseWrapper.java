@@ -57,9 +57,8 @@ class ContentCachingResponseWrapper extends org.springframework.web.util.Content
         if (isCommitted()) {
             throw new IllegalStateException();
         }
-        if (this.alwaysOk) {
-            this.status = sc;
-        } else {
+        this.status = sc;
+        if (!this.alwaysOk) {
             super.sendError(sc);
         }
     }
@@ -70,9 +69,8 @@ class ContentCachingResponseWrapper extends org.springframework.web.util.Content
         if (isCommitted()) {
             throw new IllegalStateException(msg);
         }
-        if (this.alwaysOk) {
-            this.status = sc;
-        } else {
+        this.status = sc;
+        if (!this.alwaysOk) {
             super.sendError(sc);
         }
     }
