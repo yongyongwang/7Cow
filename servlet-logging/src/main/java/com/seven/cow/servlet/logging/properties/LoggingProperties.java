@@ -23,6 +23,11 @@ public class LoggingProperties {
      */
     private int order = 0;
 
+    /**
+     * 是否屏蔽请求状态码，默认全部返回 404
+     */
+    private boolean alwaysOk = false;
+
     public List<String> getExcludePatterns() {
         return excludePatterns;
     }
@@ -37,5 +42,13 @@ public class LoggingProperties {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public boolean isAlwaysOk() {
+        return alwaysOk;
+    }
+
+    public void setAlwaysOk(boolean alwaysOk) {
+        this.alwaysOk = alwaysOk;
     }
 }

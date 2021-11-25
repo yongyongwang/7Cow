@@ -3,14 +3,14 @@ package com.seven.cow.servlet.logging.filters;
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
@@ -19,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
 
@@ -35,10 +37,12 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     @Resource
     private LoggingProperties loggingProperties;
 
+    private static final AntPathMatcher matcher = new AntPathMatcher();
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         ContentCachingRequestWrapper cachingRequestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
-        ContentCachingResponseWrapper cachingResponseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
+        ContentCachingResponseWrapper cachingResponseWrapper = new ContentCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysOk());
         String requestUrl = httpServletRequest.getRequestURL().toString();
         String queryString = httpServletRequest.getQueryString();
         if (!StringUtils.isEmpty(queryString)) {
@@ -84,8 +88,9 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             if (CurrentContext.existsKey(X_CURRENT_REQUEST_REST_OUTPUT)) {
                 LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_OUTPUT));
             }
-            HttpStatus rspStatus = HttpStatus.valueOf(httpServletResponse.getStatus());
+            HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getErrorStatus());
             if (!httpServletResponse.isCommitted()) {
+                httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
             LoggerUtils.info("< ------ Response(" + rspStatus.value() + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingResponseWrapper.getCharacterEncoding()));
@@ -95,8 +100,14 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
 
     }
 
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return false;
+    protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
+        String requestPath = httpServletRequest.getRequestURI();
+        String contentPath = httpServletRequest.getServletContext().getContextPath();
+        List<String> patterns = this.loggingProperties.getExcludePatterns();
+        if (CollectionUtils.isEmpty(patterns)) {
+            patterns = new ArrayList<>(0);
+        }
+        return patterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
     }
 
     @Override
