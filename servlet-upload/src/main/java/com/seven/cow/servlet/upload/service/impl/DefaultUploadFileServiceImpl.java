@@ -1,5 +1,7 @@
 package com.seven.cow.servlet.upload.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.upload.service.UploadFileService;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.util.FileCopyUtils;
@@ -43,10 +45,15 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public Object writeResponseInfo(FileInfo fileInfo) {
-        return new HashMap(1) {{
-            put("fileKey", fileInfo.key());
-        }};
+    public byte[] writeResponseInfo(FileInfo fileInfo) {
+        try {
+            return new ObjectMapper().writeValueAsBytes(new HashMap(1) {{
+                put("fileKey", fileInfo.key());
+            }});
+        } catch (JsonProcessingException e) {
+            LoggerUtils.error("cast to json exception:", e);
+        }
+        return new byte[0];
     }
 
     static String humanReadable(int bytes, boolean si) {

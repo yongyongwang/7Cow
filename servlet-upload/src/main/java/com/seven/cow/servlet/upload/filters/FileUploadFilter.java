@@ -1,6 +1,5 @@
 package com.seven.cow.servlet.upload.filters;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.upload.properties.UploadProperties;
 import com.seven.cow.servlet.upload.service.UploadFileService;
 import com.seven.cow.servlet.upload.service.impl.FileInfo;
@@ -33,8 +32,7 @@ public class FileUploadFilter extends OncePerRequestFilter implements Ordered {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         byte[] bytes = FileCopyUtils.copyToByteArray(request.getInputStream());
         FileInfo fileInfo = uploadFileService.upload(bytes, uploadProperties.getStoreAddress());
-        Object rtnValue = uploadFileService.writeResponseInfo(fileInfo);
-        byte[] json = new ObjectMapper().writeValueAsBytes(rtnValue);
+        byte[] json = uploadFileService.writeResponseInfo(fileInfo);
         response.getOutputStream().write(json);
     }
 

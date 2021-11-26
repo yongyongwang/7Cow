@@ -6,6 +6,6 @@ public interface UploadFileService {
 
     FileInfo upload(byte[] content, String storeAddress);
 
-    Object writeResponseInfo(FileInfo fileInfo);
+    byte[] writeResponseInfo(FileInfo fileInfo);
 
 }
