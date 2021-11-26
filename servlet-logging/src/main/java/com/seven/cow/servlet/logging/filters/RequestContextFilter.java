@@ -43,7 +43,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         ContentCachingRequestWrapper cachingRequestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
-        ContentCachingResponseWrapper cachingResponseWrapper = new ContentCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysOk());
+        ContentCachingResponseWrapper cachingResponseWrapper = new ContentCachingResponseWrapper(httpServletResponse, !loggingProperties.isAlwaysOk());
         String requestUrl = httpServletRequest.getRequestURL().toString();
         String queryString = httpServletRequest.getQueryString();
         if (!StringUtils.isEmpty(queryString)) {
