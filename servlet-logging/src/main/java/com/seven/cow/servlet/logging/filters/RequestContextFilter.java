@@ -1,6 +1,7 @@
 package com.seven.cow.servlet.logging.filters;
 
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
+import com.seven.cow.servlet.logging.service.ResponseFilterService;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.core.Ordered;
@@ -39,6 +40,9 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     private LoggingProperties loggingProperties;
 
     private static final AntPathMatcher matcher = new AntPathMatcher();
+
+    @Resource
+    private ResponseFilterService responseFilterService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -99,6 +103,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_OUTPUT));
             }
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getErrorStatus());
+            rtnValue = responseFilterService.handle(rspStatus.value(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);

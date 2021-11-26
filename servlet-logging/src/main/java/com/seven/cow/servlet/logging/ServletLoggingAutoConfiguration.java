@@ -3,7 +3,10 @@ package com.seven.cow.servlet.logging;
 import com.seven.cow.servlet.logging.aop.RequestAspect;
 import com.seven.cow.servlet.logging.filters.RequestContextFilter;
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
+import com.seven.cow.servlet.logging.service.ResponseFilterService;
+import com.seven.cow.servlet.logging.service.impl.DefaultResponseFilterServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +30,12 @@ public class ServletLoggingAutoConfiguration {
     @Bean("x-requestAspect")
     public RequestAspect requestAspect() {
         return new RequestAspect();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ResponseFilterService responseFilterService() {
+        return new DefaultResponseFilterServiceImpl();
     }
 
 }
