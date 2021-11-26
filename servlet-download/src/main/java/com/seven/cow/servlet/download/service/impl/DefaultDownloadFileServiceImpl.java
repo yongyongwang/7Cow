@@ -1,11 +1,15 @@
 package com.seven.cow.servlet.download.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.download.service.DownloadFileService;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @description: TODO
@@ -26,6 +30,14 @@ public class DefaultDownloadFileServiceImpl implements DownloadFileService {
                 return bytes;
             } catch (Exception ex) {
                 LoggerUtils.error("Download A File Failure,FileKey:" + fileKey + "!", ex);
+            }
+        } else {
+            Map<String, String> map = new HashMap<>(1);
+            try {
+                map.put("message", "fileKey:" + fileKey + " is missing!");
+                return new ObjectMapper().writeValueAsBytes(map);
+            } catch (JsonProcessingException e) {
+                LoggerUtils.error(e.getMessage(), e);
             }
         }
         return new byte[0];
