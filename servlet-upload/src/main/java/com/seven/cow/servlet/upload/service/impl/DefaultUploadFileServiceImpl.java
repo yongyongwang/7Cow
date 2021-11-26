@@ -7,6 +7,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @description: TODO
@@ -43,7 +44,9 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
 
     @Override
     public Object writeResponseInfo(FileInfo fileInfo) {
-        return fileInfo;
+        return new HashMap(1) {{
+            put("fileKey", fileInfo.key());
+        }};
     }
 
     static String humanReadable(int bytes, boolean si) {
@@ -58,13 +61,16 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
 
         private int size;
 
+        private String key;
+
         public DefaultFileInfo(int size) {
             this.size = size;
+            this.key = String.format("%02X", System.nanoTime());
         }
 
         @Override
         public String key() {
-            return String.format("%02X", System.nanoTime());
+            return this.key;
         }
 
         public String humanReadableSize() {

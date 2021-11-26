@@ -22,12 +22,20 @@ public class DefaultDownloadFileServiceImpl implements DownloadFileService {
         if (file.isFile() && file.exists()) {
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
-                LoggerUtils.info("Download A File Successful,FileKey:" + fileKey + ",Size:" + bytes.length + " !");
+                LoggerUtils.info("Download A File Successful,FileKey:" + fileKey + ",Size:" + humanReadable(bytes.length, true) + " !");
                 return bytes;
             } catch (Exception ex) {
                 LoggerUtils.error("Download A File Failure,FileKey:" + fileKey + "!", ex);
             }
         }
         return new byte[0];
+    }
+
+    static String humanReadable(int bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }
