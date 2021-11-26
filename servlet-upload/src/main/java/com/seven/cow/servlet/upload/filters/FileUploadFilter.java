@@ -42,9 +42,9 @@ public class FileUploadFilter extends OncePerRequestFilter implements Ordered {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String contentPath = request.getServletContext().getContextPath();
         String requestPath = request.getRequestURI();
-        return "POST".equalsIgnoreCase(request.getMethod())
+        return !("POST".equalsIgnoreCase(request.getMethod())
                 && "application/octet-stream".equalsIgnoreCase(request.getContentType())
-                && !requestPath.equals((contentPath + uploadProperties.getAddress()));
+                && requestPath.equalsIgnoreCase((contentPath + uploadProperties.getAddress())));
     }
 
     @Override

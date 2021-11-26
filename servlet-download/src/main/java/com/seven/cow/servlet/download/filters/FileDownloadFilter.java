@@ -49,8 +49,8 @@ public class FileDownloadFilter extends OncePerRequestFilter implements Ordered 
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String contentPath = request.getServletContext().getContextPath();
         String requestPath = request.getRequestURI();
-        return "GET".equalsIgnoreCase(request.getMethod())
-                && matcher.match((contentPath + downloadProperties.getAddress()), requestPath);
+        return !("GET".equalsIgnoreCase(request.getMethod())
+                && matcher.match((contentPath + downloadProperties.getAddress()), requestPath));
     }
 
 
