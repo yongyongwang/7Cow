@@ -13,6 +13,7 @@
         <module>servlet-logging</module>
         <module>servlet-upload</module>
         <module>servlet-download</module>
+        <module>servlet-cors</module>
     </modules>
     <packaging>pom</packaging>
     <name>7Cow</name>
