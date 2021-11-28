@@ -1,7 +1,6 @@
 package com.seven.cow.servlet.cors.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,12 +23,12 @@ public class CorsProperties {
      * 允许的请求方式
      */
     private List<String> allowedMethods =
-            Arrays.asList(HttpMethod.GET.name()
-                    , HttpMethod.HEAD.name()
-                    , HttpMethod.POST.name()
-                    , HttpMethod.DELETE.name()
-                    , HttpMethod.PUT.name()
-                    , HttpMethod.OPTIONS.name());
+            Arrays.asList("GET"
+                    , "HEAD"
+                    , "POST"
+                    , "DELETE"
+                    , "PUT"
+                    , "OPTIONS");
 
     /**
      * 允许的头部信息
