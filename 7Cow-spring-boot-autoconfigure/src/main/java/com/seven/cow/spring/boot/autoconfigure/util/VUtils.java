@@ -11,4 +11,8 @@ public final class VUtils {
         };
     }
 
+    public static ChooseHandler choose(int index) {
+        return choose(() -> index);
+    }
+
 }
