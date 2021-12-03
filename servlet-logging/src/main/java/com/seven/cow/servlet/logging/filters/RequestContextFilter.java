@@ -51,7 +51,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
         String requestUrl = httpServletRequest.getRequestURL().toString();
         String queryString = httpServletRequest.getQueryString();
         if (!StringUtils.isEmpty(queryString)) {
-            queryString = URLDecoder.decode(queryString, "UTF-8");
+            queryString = URLDecoder.decode(queryString, cachingRequestWrapper.getCharacterEncoding());
             requestUrl += "?" + queryString;
         }
         String method = httpServletRequest.getMethod();
@@ -108,7 +108,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            LoggerUtils.info("< ------ Response(" + rspStatus.value() + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingResponseWrapper.getCharacterEncoding()));
+            LoggerUtils.info("< ------ Response(" + rspStatus.value() + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
             LoggerUtils.info("< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }
