@@ -4,6 +4,7 @@ import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.servlet.logging.service.ResponseFilterService;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
+import com.seven.cow.spring.boot.autoconfigure.util.VUtils;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
 
@@ -85,23 +85,13 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 reqBytes = FileCopyUtils.copyToByteArray(cachingRequestWrapper.getInputStream());
             }
             CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
-            if (!CollectionUtils.isEmpty(parameters)) {
-                LoggerUtils.info("------ > Request Parameters: " + parameters.stream().collect(Collectors.joining("&")));
-            }
+            VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> LoggerUtils.info("------ > Request Parameters: " + String.join("&", parameters)));
             String payload = new String(reqBytes, cachingRequestWrapper.getCharacterEncoding());
-            if (!StringUtils.isEmpty(payload)) {
-                LoggerUtils.info("------ > Request Payload: " + payload);
-            }
+            VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> LoggerUtils.info("------ > Request Payload: " + payload));
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
-            if (CurrentContext.existsKey(X_CURRENT_REQUEST_REST_INPUT)) {
-                LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_INPUT));
-            }
-            if (CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION)) {
-                LoggerUtils.info("rest process exception:", (Throwable) CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION));
-            }
-            if (CurrentContext.existsKey(X_CURRENT_REQUEST_REST_OUTPUT)) {
-                LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_OUTPUT));
-            }
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_REST_INPUT) ? 0 : 1).handle(() -> LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_INPUT)));
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> LoggerUtils.info("rest process exception:", (Throwable) CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_REST_OUTPUT) ? 0 : 1).handle(() -> LoggerUtils.info(CurrentContext.take(X_CURRENT_REQUEST_REST_OUTPUT)));
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getErrorStatus());
             rtnValue = responseFilterService.handle(rspStatus.value(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
