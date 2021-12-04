@@ -16,7 +16,7 @@
         <module>servlet-cors</module>
     </modules>
     <packaging>pom</packaging>
-    <name>7Cow</name>
+    <name>7Cow:${project.version}</name>
     <url>https://github.com/yongyongwang/7Cow.git</url>
     <description>7Cow to celebrate the birth of my daughter</description>
 
