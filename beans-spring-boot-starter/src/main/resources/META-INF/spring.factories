@@ -1,0 +1,4 @@
+org.springframework.boot.SpringApplicationRunListener=\
+com.seven.cow.beans.spring.boot.starter.listener.BeansRegistryApplicationRunListener
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.seven.cow.beans.spring.boot.starter.SpringBeansAutoConfiguration

@@ -14,6 +14,7 @@
         <module>servlet-upload</module>
         <module>servlet-download</module>
         <module>servlet-cors</module>
+        <module>beans-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
     <name>7Cow:${project.version}</name>
