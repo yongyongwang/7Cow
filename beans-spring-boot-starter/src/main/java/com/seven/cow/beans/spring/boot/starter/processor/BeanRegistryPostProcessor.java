@@ -105,14 +105,13 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
                 LoggerUtils.error(e.getMessage(), e);
             }
         }
-
-        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(beanDefinitionRegistry,
-                true, this.environment, this.resourceLoader);
-        for (TypeFilter excludeFilter : excludeFilters) {
-            scanner.addExcludeFilter(excludeFilter);
-        }
         List<String> basePackages = beansProperties.getBasePackages();
         if (!CollectionUtils.isEmpty(basePackages)) {
+            ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(beanDefinitionRegistry,
+                    true, this.environment, this.resourceLoader);
+            for (TypeFilter excludeFilter : excludeFilters) {
+                scanner.addExcludeFilter(excludeFilter);
+            }
             for (String basePackage : basePackages) {
                 Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents(basePackage);
                 for (BeanDefinition beanDefinition : beanDefinitions) {
