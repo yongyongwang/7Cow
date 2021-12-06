@@ -3,6 +3,7 @@ package com.seven.cow.beans.spring.boot.starter.processor;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
+import com.seven.cow.spring.boot.autoconfigure.util.VUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -48,45 +49,54 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
         this.classLoader = classLoader;
     }
 
+    private void processTypeFilter(TypeFiltersProperties typeFiltersProperties, List<TypeFilter> typeFilters) {
+        List<Class<Annotation>> annotations = typeFiltersProperties.getAnnotation();
+        if (!CollectionUtils.isEmpty(annotations)) {
+            for (Class<Annotation> annotation : annotations) {
+                typeFilters.add(new AnnotationTypeFilter(annotation));
+            }
+        }
+        List<Class<?>> assignables = typeFiltersProperties.getAssignable();
+        if (!CollectionUtils.isEmpty(assignables)) {
+            for (Class<?> assignable : assignables) {
+                typeFilters.add(new AssignableTypeFilter(assignable));
+            }
+        }
+        List<String> aspectjs = typeFiltersProperties.getAspectj();
+        if (!CollectionUtils.isEmpty(aspectjs)) {
+            for (String aspectj : aspectjs) {
+                typeFilters.add(new AspectJTypeFilter(aspectj, this.classLoader));
+            }
+        }
+        List<String> regexs = typeFiltersProperties.getRegex();
+        if (!CollectionUtils.isEmpty(regexs)) {
+            for (String regex : regexs) {
+                Pattern pattern = Pattern.compile(regex);
+                typeFilters.add(new RegexPatternTypeFilter(pattern));
+            }
+        }
+        List<Class<TypeFilter>> customs = typeFiltersProperties.getCustom();
+        if (!CollectionUtils.isEmpty(customs)) {
+            for (Class<TypeFilter> custom : customs) {
+                TypeFilter typeFilter = BeanUtils.instantiateClass(custom);
+                typeFilters.add(typeFilter);
+            }
+        }
+    }
+
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
         String[] beanDefinitionsNames = beanDefinitionRegistry.getBeanDefinitionNames();
         List<TypeFilter> excludeFilters = new ArrayList<>();
+        List<TypeFilter> includeFilters = new ArrayList<>();
         TypeFiltersProperties excludeTypeFiltersProperties = beansProperties.getExcludeFilters();
-        if (null != excludeTypeFiltersProperties) {
-            List<Class<Annotation>> annotations = excludeTypeFiltersProperties.getAnnotation();
-            if (!CollectionUtils.isEmpty(annotations)) {
-                for (Class<Annotation> annotation : annotations) {
-                    excludeFilters.add(new AnnotationTypeFilter(annotation));
-                }
-            }
-            List<Class<?>> assignables = excludeTypeFiltersProperties.getAssignable();
-            if (!CollectionUtils.isEmpty(assignables)) {
-                for (Class<?> assignable : assignables) {
-                    excludeFilters.add(new AssignableTypeFilter(assignable));
-                }
-            }
-            List<String> aspectjs = excludeTypeFiltersProperties.getAspectj();
-            if (!CollectionUtils.isEmpty(aspectjs)) {
-                for (String aspectj : aspectjs) {
-                    excludeFilters.add(new AspectJTypeFilter(aspectj, this.classLoader));
-                }
-            }
-            List<String> regexs = excludeTypeFiltersProperties.getRegex();
-            if (!CollectionUtils.isEmpty(regexs)) {
-                for (String regex : regexs) {
-                    Pattern pattern = Pattern.compile(regex);
-                    excludeFilters.add(new RegexPatternTypeFilter(pattern));
-                }
-            }
-            List<Class<TypeFilter>> customs = excludeTypeFiltersProperties.getCustom();
-            if (!CollectionUtils.isEmpty(customs)) {
-                for (Class<TypeFilter> custom : customs) {
-                    TypeFilter typeFilter = BeanUtils.instantiateClass(custom);
-                    excludeFilters.add(typeFilter);
-                }
-            }
-        }
+        VUtils.choose(() -> null != excludeTypeFiltersProperties ? 0 : 1).handle(() -> {
+            processTypeFilter(excludeTypeFiltersProperties, excludeFilters);
+        });
+        TypeFiltersProperties includeTypeFiltersProperties = beansProperties.getIncludeFilters();
+        VUtils.choose(() -> null != includeTypeFiltersProperties ? 0 : 1).handle(() -> {
+            processTypeFilter(includeTypeFiltersProperties, includeFilters);
+        });
         for (String beanDefinitionsName : beanDefinitionsNames) {
             BeanDefinition beanDefinition = beanDefinitionRegistry.getBeanDefinition(beanDefinitionsName);
             String className = beanDefinition.getBeanClassName();
@@ -111,6 +121,9 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
                     true, this.environment, this.resourceLoader);
             for (TypeFilter excludeFilter : excludeFilters) {
                 scanner.addExcludeFilter(excludeFilter);
+            }
+            for (TypeFilter includeFilter : includeFilters) {
+                scanner.addIncludeFilter(includeFilter);
             }
             for (String basePackage : basePackages) {
                 Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents(basePackage);

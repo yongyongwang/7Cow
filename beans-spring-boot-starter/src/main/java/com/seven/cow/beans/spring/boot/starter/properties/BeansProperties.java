@@ -14,6 +14,12 @@ public class BeansProperties {
     private List<String> basePackages;
 
     /**
+     * 包含过滤器，匹配的条件为 true 注册为 bean
+     */
+    @NestedConfigurationProperty
+    private TypeFiltersProperties includeFilters;
+
+    /**
      * 排除过滤器
      */
     @NestedConfigurationProperty
@@ -25,6 +31,14 @@ public class BeansProperties {
 
     public void setBasePackages(List<String> basePackages) {
         this.basePackages = basePackages;
+    }
+
+    public TypeFiltersProperties getIncludeFilters() {
+        return includeFilters;
+    }
+
+    public void setIncludeFilters(TypeFiltersProperties includeFilters) {
+        this.includeFilters = includeFilters;
     }
 
     public TypeFiltersProperties getExcludeFilters() {
