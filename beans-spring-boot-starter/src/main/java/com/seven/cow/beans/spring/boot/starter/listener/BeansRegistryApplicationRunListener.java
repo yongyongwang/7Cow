@@ -30,11 +30,13 @@ public class BeansRegistryApplicationRunListener implements SpringApplicationRun
 
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
-        BindResult<BeansProperties> bindResult = Binder.get(context.getEnvironment()).bind("spring.beans", Bindable.of(BeansProperties.class));
+        ClassLoader classLoader = context.getClassLoader();
+        ConfigurableEnvironment environment = context.getEnvironment();
+        BindResult<BeansProperties> bindResult = Binder.get(environment).bind("spring.beans", Bindable.of(BeansProperties.class));
         bindResult.ifBound(beansProperties -> {
             ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
             beanFactory.registerSingleton("beansProperties", beansProperties);
-            beanFactory.registerSingleton("x-beanDefinitionRegistryPostProcessor",new BeanRegistryPostProcessor(beansProperties));
+            beanFactory.registerSingleton("x-beanDefinitionRegistryPostProcessor", new BeanRegistryPostProcessor(beansProperties, environment, classLoader));
         });
     }
 

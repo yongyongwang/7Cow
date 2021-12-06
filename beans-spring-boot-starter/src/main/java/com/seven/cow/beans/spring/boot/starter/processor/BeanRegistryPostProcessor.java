@@ -9,6 +9,11 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.annotation.AnnotationBeanNameGenerator;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
@@ -20,6 +25,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
@@ -28,8 +34,18 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
 
     private final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory();
 
-    public BeanRegistryPostProcessor(BeansProperties beansProperties) {
+    private final ResourceLoader resourceLoader = new DefaultResourceLoader();
+
+    private final AnnotationBeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
+
+    private final Environment environment;
+
+    private final ClassLoader classLoader;
+
+    public BeanRegistryPostProcessor(BeansProperties beansProperties, Environment environment, ClassLoader classLoader) {
         this.beansProperties = beansProperties;
+        this.environment = environment;
+        this.classLoader = classLoader;
     }
 
     @Override
@@ -53,7 +69,7 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
             List<String> aspectjs = excludeTypeFiltersProperties.getAspectj();
             if (!CollectionUtils.isEmpty(aspectjs)) {
                 for (String aspectj : aspectjs) {
-                    excludeFilters.add(new AspectJTypeFilter(aspectj, beanDefinitionRegistry.getClass().getClassLoader()));
+                    excludeFilters.add(new AspectJTypeFilter(aspectj, this.classLoader));
                 }
             }
             List<String> regexs = excludeTypeFiltersProperties.getRegex();
@@ -90,6 +106,21 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
             }
         }
 
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(beanDefinitionRegistry,
+                true, this.environment, this.resourceLoader);
+        for (TypeFilter excludeFilter : excludeFilters) {
+            scanner.addExcludeFilter(excludeFilter);
+        }
+        List<String> basePackages = beansProperties.getBasePackages();
+        if (!CollectionUtils.isEmpty(basePackages)) {
+            for (String basePackage : basePackages) {
+                Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents(basePackage);
+                for (BeanDefinition beanDefinition : beanDefinitions) {
+                    String beanName = beanNameGenerator.generateBeanName(beanDefinition, beanDefinitionRegistry);
+                    beanDefinitionRegistry.registerBeanDefinition(beanName, beanDefinition);
+                }
+            }
+        }
     }
 
     @Override
