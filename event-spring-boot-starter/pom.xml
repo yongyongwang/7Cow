@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>servlet-download</artifactId>
-    <name>servlet-download:${project.version}</name>
+    <artifactId>event-spring-boot-starter</artifactId>
+    <name>event-spring-boot-starter:${project.version}</name>
 
     <dependencies>
         <dependency>
@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
