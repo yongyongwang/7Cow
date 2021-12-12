@@ -15,6 +15,7 @@
         <module>servlet-download</module>
         <module>servlet-cors</module>
         <module>beans-spring-boot-starter</module>
+        <module>event-spring-boot-starter</module>
         <module>jsch-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
