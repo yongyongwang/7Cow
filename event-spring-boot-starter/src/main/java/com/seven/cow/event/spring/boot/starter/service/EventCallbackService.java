@@ -1,9 +1,9 @@
 package com.seven.cow.event.spring.boot.starter.service;
 
-public interface EventCallbackService {
+public interface EventCallbackService<T> {
 
     String eventCode();
 
-    void run(Object message);
+    void run(T message);
 
 }
