@@ -25,6 +25,7 @@ public abstract class EventUtils {
 
     public static List<EventRunnable> takeEvents(String event) {
         List<EventRunnable> eventBurnables = eventRunnableMap.get(event);
+        LoggerUtils.info("take event【" + event + "】runnable size:" + eventBurnables.size());
         return eventBurnables.stream().sorted(Comparator.comparing(Ordered::getOrder)).collect(Collectors.toList());
     }
 
