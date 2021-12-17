@@ -1,9 +1,11 @@
 package com.seven.cow.event.spring.boot.starter.service.impl;
 
 import com.seven.cow.event.spring.boot.starter.service.EventCallbackService;
+import com.seven.cow.event.spring.boot.starter.service.EventRunnable;
 import com.seven.cow.event.spring.boot.starter.service.EventService;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -27,7 +29,20 @@ public class EventServiceCombination implements InitializingBean {
                 {
                     if (method.getName().equals("run")) {
                         String parameterType = method.getGenericParameterTypes()[0].getTypeName();
-                        eventService.registerHandler(eventCallbackService.eventCode(), parameterType, eventCallbackService::run);
+                        eventService.registerHandler(eventCallbackService.eventCode(), parameterType, new EventRunnable() {
+                            @Override
+                            public void run(Object message) {
+                                eventCallbackService.run(message);
+                            }
+
+                            @Override
+                            public int getOrder() {
+                                if (eventCallbackService instanceof Ordered) {
+                                    return ((Ordered) eventCallbackService).getOrder();
+                                }
+                                return 0;
+                            }
+                        });
                     }
                 }, ReflectionUtils.USER_DECLARED_METHODS);
             }

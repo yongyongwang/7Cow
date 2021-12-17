@@ -39,15 +39,10 @@ public class EventServiceImpl implements EventService {
                 VUtils.choose(() -> eventRunnableMap.containsKey(key) ? 0 : 1)
                         .handle(() -> {
                             List<EventRunnable> eventBurnables = eventRunnableMap.get(key);
-                            List<EventRunnable> orderEventBurnables = eventBurnables.stream()
-                                    .filter(eventRunnable -> eventRunnable instanceof Ordered)
-                                    .sorted(Comparator.comparing(eventRunnable -> ((Ordered) eventRunnable).getOrder()))
-                                    .collect(Collectors.toList());
+                            List<EventRunnable> orderEventBurnables = eventBurnables.stream().sorted(Comparator.comparing(Ordered::getOrder)).collect(Collectors.toList());
                             for (EventRunnable orderEventBurnable : orderEventBurnables) {
                                 orderEventBurnable.run(message);
                             }
-                            eventBurnables.stream().filter(eventRunnable -> !(eventRunnable instanceof Ordered))
-                                    .forEach(eventRunnable -> eventRunnable.run(message));
                         });
         if (isAsync) {
             businessEventExecutorService.execute(runnable);
