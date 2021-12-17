@@ -36,7 +36,7 @@ public class EventServiceImpl implements EventService {
                             for (EventRunnable orderEventBurnable : orderEventBurnables) {
                                 orderEventBurnable.run(message);
                             }
-                        }, () -> LoggerUtils.info("No Event Handler Process"));
+                        }, () -> LoggerUtils.info("No Event 【" + eventCode + "】 Handler!"));
         if (isAsync) {
             businessEventExecutorService.execute(runnable);
         } else {
