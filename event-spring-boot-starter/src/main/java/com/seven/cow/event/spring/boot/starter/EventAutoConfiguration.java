@@ -1,6 +1,5 @@
 package com.seven.cow.event.spring.boot.starter;
 
-import com.seven.cow.event.spring.boot.starter.processor.BusinessEventListenerAnnotationBeanPostProcessor;
 import com.seven.cow.event.spring.boot.starter.properties.EventExecutorProperties;
 import com.seven.cow.event.spring.boot.starter.service.EventService;
 import com.seven.cow.event.spring.boot.starter.service.impl.BusinessEventThreadFactory;
@@ -43,12 +42,6 @@ public class EventAutoConfiguration {
             }
         }
         return new ThreadPoolExecutor(executorProperties.getCorePoolSize(), executorProperties.getMaximumPoolSize(), executorProperties.getKeepAliveTime(), TimeUnit.SECONDS, new SynchronousQueue<>(), new BusinessEventThreadFactory(executorProperties.getNamePrefix()), rejectedExecutionHandler);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public BusinessEventListenerAnnotationBeanPostProcessor businessEventListenerAnnotationBeanPostProcessor(){
-        return new BusinessEventListenerAnnotationBeanPostProcessor();
     }
 
 }
