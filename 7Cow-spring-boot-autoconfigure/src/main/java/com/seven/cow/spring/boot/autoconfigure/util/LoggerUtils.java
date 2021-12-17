@@ -16,7 +16,7 @@ public final class LoggerUtils {
 
     }
 
-    private static final Logger logger = LoggerFactory.getLogger("com.i.framework.logging");
+    private static final Logger logger = LoggerFactory.getLogger("7Cow.notify.message");
 
     public static String getName() {
         return logger.getName();

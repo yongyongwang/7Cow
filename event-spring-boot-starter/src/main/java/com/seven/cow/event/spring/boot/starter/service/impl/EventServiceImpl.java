@@ -17,7 +17,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void publish(String eventCode, Object message) {
-        publish(eventCode, message, message.getClass().getTypeName(), true);
+        publish(eventCode, message, null == message ? "" : message.getClass().getTypeName(), true);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class EventServiceImpl implements EventService {
                             for (EventRunnable orderEventBurnable : orderEventBurnables) {
                                 orderEventBurnable.run(message);
                             }
-                        });
+                        }, () -> LoggerUtils.info("No Event Handler Process"));
         if (isAsync) {
             businessEventExecutorService.execute(runnable);
         } else {
