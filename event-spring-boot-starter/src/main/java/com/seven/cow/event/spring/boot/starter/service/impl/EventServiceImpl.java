@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void registerHandler(String eventCode, String messageType, EventRunnable runnable) {
-        LoggerUtils.info("register event code handler【" + eventCode + "】:" + runnable);
+        LoggerUtils.info("register event code【" + eventCode + "】handler:" + runnable);
         eventRunnableMap.add((eventCode + ":" + messageType), runnable);
     }
 }
