@@ -2,7 +2,7 @@ package com.seven.cow.event.spring.boot.starter.processor;
 
 import com.seven.cow.event.spring.boot.starter.annotations.BusinessEventListener;
 import com.seven.cow.event.spring.boot.starter.service.EventRunnable;
-import com.seven.cow.event.spring.boot.starter.service.EventService;
+import com.seven.cow.event.spring.boot.starter.util.EventUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.util.ReflectionUtils;
 
-import javax.annotation.Resource;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -28,11 +27,6 @@ import java.util.Collections;
  */
 public class BusinessEventListenerAnnotationBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
 
-    public static final String BEAN_NAME = "businessEventListenerAnnotationBeanPostProcessor";
-
-    @Resource
-    private EventService eventService;
-
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class<?> targetClass = AopUtils.getTargetClass(bean);
@@ -43,7 +37,7 @@ public class BusinessEventListenerAnnotationBeanPostProcessor implements BeanPos
                 BusinessEventListener annotation = method.getAnnotation(BusinessEventListener.class);
                 String eventCode = annotation.value();
                 String messageType = method.getGenericParameterTypes()[0].getTypeName();
-                eventService.registerHandler(eventCode, messageType, new EventRunnable() {
+                EventUtils.registerEvent((eventCode + ":" + messageType), new EventRunnable() {
                     @Override
                     public void run(Object message) {
                         try {
