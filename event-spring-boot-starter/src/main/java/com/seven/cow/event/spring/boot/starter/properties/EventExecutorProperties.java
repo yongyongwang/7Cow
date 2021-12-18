@@ -25,7 +25,7 @@ public class EventExecutorProperties {
     /**
      * 线程池名称前缀
      */
-    private String namePrefix = "business-event-";
+    private String namePrefix = "event:";
 
     /**
      * 线程池拒绝处理类
