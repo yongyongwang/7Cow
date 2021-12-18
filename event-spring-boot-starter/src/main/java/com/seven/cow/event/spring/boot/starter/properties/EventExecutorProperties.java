@@ -12,7 +12,7 @@ public class EventExecutorProperties {
      */
     private Integer corePoolSize = 10;
 
-    /*
+    /**
      * 最大线程数
      */
     private Integer maximumPoolSize = 50;
