@@ -5,6 +5,7 @@ import com.seven.cow.event.spring.boot.starter.service.EventService;
 import com.seven.cow.event.spring.boot.starter.util.EventUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.VUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,7 +29,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void publish(String eventCode, Object message, String messageType, boolean isAsync) {
         LoggerUtils.info("publish event code【" + eventCode + "】:" + message);
-        String key = eventCode + ":" + messageType;
+        String key = StringUtils.isEmpty(messageType) ? eventCode : eventCode + ":" + messageType;
         Runnable runnable = () ->
                 VUtils.choose(() -> EventUtils.containsEvent(key) ? 0 : 1)
                         .handle(() -> {
@@ -36,7 +37,7 @@ public class EventServiceImpl implements EventService {
                             for (EventRunnable orderEventBurnable : orderEventBurnables) {
                                 orderEventBurnable.run(message);
                             }
-                        }, () -> LoggerUtils.info("No Event 【" + eventCode + "】 Handler!"));
+                        }, () -> LoggerUtils.info("No Event 【" + key + "】 Handler!"));
         if (isAsync) {
             businessEventExecutorService.execute(runnable);
         } else {
@@ -46,6 +47,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void registerHandler(String eventCode, String messageType, EventRunnable runnable) {
-        EventUtils.registerEvent((eventCode + ":" + messageType), runnable);
+        String key = StringUtils.isEmpty(messageType) ? eventCode : eventCode + ":" + messageType;
+        EventUtils.registerEvent(key, runnable);
     }
 }
