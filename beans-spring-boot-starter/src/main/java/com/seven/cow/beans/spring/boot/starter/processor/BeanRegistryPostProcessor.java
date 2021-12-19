@@ -4,7 +4,6 @@ import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.VUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -18,16 +17,16 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.core.type.filter.*;
+import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
+
+import static com.seven.cow.beans.spring.boot.starter.util.TypeFiltersUtils.processTypeFilter;
 
 public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
@@ -49,41 +48,6 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
         this.classLoader = classLoader;
     }
 
-    private void processTypeFilter(TypeFiltersProperties typeFiltersProperties, List<TypeFilter> typeFilters) {
-        List<Class<Annotation>> annotations = typeFiltersProperties.getAnnotation();
-        if (!CollectionUtils.isEmpty(annotations)) {
-            for (Class<Annotation> annotation : annotations) {
-                typeFilters.add(new AnnotationTypeFilter(annotation));
-            }
-        }
-        List<Class<?>> assignables = typeFiltersProperties.getAssignable();
-        if (!CollectionUtils.isEmpty(assignables)) {
-            for (Class<?> assignable : assignables) {
-                typeFilters.add(new AssignableTypeFilter(assignable));
-            }
-        }
-        List<String> aspectjs = typeFiltersProperties.getAspectj();
-        if (!CollectionUtils.isEmpty(aspectjs)) {
-            for (String aspectj : aspectjs) {
-                typeFilters.add(new AspectJTypeFilter(aspectj, this.classLoader));
-            }
-        }
-        List<String> regexs = typeFiltersProperties.getRegex();
-        if (!CollectionUtils.isEmpty(regexs)) {
-            for (String regex : regexs) {
-                Pattern pattern = Pattern.compile(regex);
-                typeFilters.add(new RegexPatternTypeFilter(pattern));
-            }
-        }
-        List<Class<TypeFilter>> customs = typeFiltersProperties.getCustom();
-        if (!CollectionUtils.isEmpty(customs)) {
-            for (Class<TypeFilter> custom : customs) {
-                TypeFilter typeFilter = BeanUtils.instantiateClass(custom);
-                typeFilters.add(typeFilter);
-            }
-        }
-    }
-
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
         String[] beanDefinitionsNames = beanDefinitionRegistry.getBeanDefinitionNames();
@@ -91,11 +55,11 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
         List<TypeFilter> includeFilters = new ArrayList<>();
         TypeFiltersProperties excludeTypeFiltersProperties = beansProperties.getExcludeFilters();
         VUtils.choose(() -> null != excludeTypeFiltersProperties ? 0 : 1).handle(() -> {
-            processTypeFilter(excludeTypeFiltersProperties, excludeFilters);
+            processTypeFilter(excludeTypeFiltersProperties, excludeFilters, this.classLoader);
         });
         TypeFiltersProperties includeTypeFiltersProperties = beansProperties.getIncludeFilters();
         VUtils.choose(() -> null != includeTypeFiltersProperties ? 0 : 1).handle(() -> {
-            processTypeFilter(includeTypeFiltersProperties, includeFilters);
+            processTypeFilter(includeTypeFiltersProperties, includeFilters, this.classLoader);
         });
         for (String beanDefinitionsName : beanDefinitionsNames) {
             BeanDefinition beanDefinition = beanDefinitionRegistry.getBeanDefinition(beanDefinitionsName);

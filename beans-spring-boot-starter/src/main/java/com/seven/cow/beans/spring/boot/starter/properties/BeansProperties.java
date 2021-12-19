@@ -25,6 +25,11 @@ public class BeansProperties {
     @NestedConfigurationProperty
     private TypeFiltersProperties excludeFilters;
 
+    /**
+     * 子容器应用扫描包路径列表
+     */
+    private List<Class<?>> appBasePackages;
+
     public List<String> getBasePackages() {
         return basePackages;
     }
@@ -49,4 +54,11 @@ public class BeansProperties {
         this.excludeFilters = excludeFilters;
     }
 
+    public List<Class<?>> getAppBasePackages() {
+        return appBasePackages;
+    }
+
+    public void setAppBasePackages(List<Class<?>> appBasePackages) {
+        this.appBasePackages = appBasePackages;
+    }
 }
