@@ -11,7 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
-import org.springframework.context.annotation.ConfigurationClassPostProcessor;
+import org.springframework.context.annotation.BusinessClassPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.CollectionUtils;
@@ -55,7 +55,7 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
             List<Class<?>> appBasePackages = beansProperties.getAppBasePackages();
             if (!CollectionUtils.isEmpty(appBasePackages)) {
                 for (Class<?> appBasePackage : appBasePackages) {
-                    RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
+                    RootBeanDefinition def = new RootBeanDefinition(BusinessClassPostProcessor.class);
                     AnnotationConfigApplicationContext appContent = Builder.of(AnnotationConfigApplicationContext::new)
                             .with(AnnotationConfigApplicationContext::setEnvironment, environment)
                             .with(AnnotationConfigApplicationContext::setParent, context)
