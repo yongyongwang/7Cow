@@ -41,6 +41,51 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>7Cow-spring-boot-autoconfigure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>7Cow-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>servlet-logging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>servlet-upload</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>servlet-download</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>servlet-cors</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>beans-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>event-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>jsch-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring.boot.version}</version>

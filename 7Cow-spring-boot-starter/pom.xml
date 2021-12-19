@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.github.yongyongwang</groupId>
             <artifactId>7Cow-spring-boot-autoconfigure</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
