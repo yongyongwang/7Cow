@@ -1,5 +1,6 @@
 package com.seven.cow.beans.spring.boot.starter.layered;
 
+import com.seven.cow.beans.spring.boot.starter.empty.BeanEmpty;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
@@ -59,11 +60,13 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                     RootBeanDefinition def = new RootBeanDefinition(BusinessClassPostProcessor.class);
                     MutablePropertyValues propertyValues = new MutablePropertyValues();
                     propertyValues.add("basePackage", appBasePackage);
+                    propertyValues.add("beansProperties", beansProperties);
                     def.setPropertyValues(propertyValues);
                     AnnotationConfigApplicationContext appContent = Builder.of(AnnotationConfigApplicationContext::new)
                             .with(AnnotationConfigApplicationContext::setEnvironment, environment)
                             .with(AnnotationConfigApplicationContext::setParent, context)
                             .with(AnnotationConfigApplicationContext::setClassLoader, context.getClassLoader())
+                            .with(AnnotationConfigApplicationContext::register, BeanEmpty.class)
                             .with(AnnotationConfigApplicationContext::registerBeanDefinition, AnnotationConfigUtils.CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME, def)
                             .build();
                     appContent.refresh();

@@ -8,7 +8,6 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.parsing.FailFastProblemReporter;
 import org.springframework.beans.factory.parsing.PassThroughSourceExtractor;
@@ -34,7 +33,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import javax.annotation.Resource;
 import java.beans.PropertyDescriptor;
 import java.util.*;
 
@@ -76,10 +74,17 @@ public class BusinessClassPostProcessor implements BeanDefinitionRegistryPostPro
     /* Using short class names as default bean names */
     private BeanNameGenerator componentScanBeanNameGenerator = new AnnotationBeanNameGenerator();
 
-    @Resource
     private BeansProperties beansProperties;
 
     private String basePackage;
+
+    public BeansProperties getBeansProperties() {
+        return beansProperties;
+    }
+
+    public void setBeansProperties(BeansProperties beansProperties) {
+        this.beansProperties = beansProperties;
+    }
 
     public String getBasePackage() {
         return basePackage;
