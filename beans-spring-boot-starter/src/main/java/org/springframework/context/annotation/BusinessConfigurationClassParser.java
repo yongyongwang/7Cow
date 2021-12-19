@@ -124,7 +124,7 @@ class BusinessConfigurationClassParser {
      */
     public BusinessConfigurationClassParser(MetadataReaderFactory metadataReaderFactory,
                                             ProblemReporter problemReporter, Environment environment, ResourceLoader resourceLoader,
-                                            BeanNameGenerator componentScanBeanNameGenerator, BeanDefinitionRegistry registry, BeansProperties beansProperties) {
+                                            BeanNameGenerator componentScanBeanNameGenerator, BeanDefinitionRegistry registry, BeansProperties beansProperties, String basePackage) {
 
         this.metadataReaderFactory = metadataReaderFactory;
         this.problemReporter = problemReporter;
@@ -132,7 +132,7 @@ class BusinessConfigurationClassParser {
         this.resourceLoader = resourceLoader;
         this.registry = registry;
         this.componentScanParser = new BusinessComponentScanAnnotationParser(
-                environment, resourceLoader, componentScanBeanNameGenerator, registry, beansProperties);
+                environment, resourceLoader, componentScanBeanNameGenerator, registry, beansProperties, basePackage);
         this.conditionEvaluator = new ConditionEvaluator(registry, environment, resourceLoader);
     }
 

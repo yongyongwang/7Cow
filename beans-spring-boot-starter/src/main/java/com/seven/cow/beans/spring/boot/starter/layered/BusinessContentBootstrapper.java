@@ -4,6 +4,7 @@ import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -52,15 +53,17 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
             List<TypeFilter> excludeFilters = new ArrayList<>();
             processTypeFilter(includeTypeFilters, includeFilters, context.getClassLoader());
             processTypeFilter(excludeTypeFilters, excludeFilters, context.getClassLoader());
-            List<Class<?>> appBasePackages = beansProperties.getAppBasePackages();
+            List<String> appBasePackages = beansProperties.getAppBasePackages();
             if (!CollectionUtils.isEmpty(appBasePackages)) {
-                for (Class<?> appBasePackage : appBasePackages) {
+                for (String appBasePackage : appBasePackages) {
                     RootBeanDefinition def = new RootBeanDefinition(BusinessClassPostProcessor.class);
+                    MutablePropertyValues propertyValues = new MutablePropertyValues();
+                    propertyValues.add("basePackage", appBasePackage);
+                    def.setPropertyValues(propertyValues);
                     AnnotationConfigApplicationContext appContent = Builder.of(AnnotationConfigApplicationContext::new)
                             .with(AnnotationConfigApplicationContext::setEnvironment, environment)
                             .with(AnnotationConfigApplicationContext::setParent, context)
                             .with(AnnotationConfigApplicationContext::setClassLoader, context.getClassLoader())
-                            .with(AnnotationConfigApplicationContext::register, appBasePackage)
                             .with(AnnotationConfigApplicationContext::registerBeanDefinition, AnnotationConfigUtils.CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME, def)
                             .build();
                     appContent.refresh();

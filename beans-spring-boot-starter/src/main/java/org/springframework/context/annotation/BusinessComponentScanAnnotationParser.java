@@ -60,14 +60,17 @@ class BusinessComponentScanAnnotationParser {
 
     private final BeansProperties beansProperties;
 
+    private final String basePackage;
+
     public BusinessComponentScanAnnotationParser(Environment environment, ResourceLoader resourceLoader,
-                                                 BeanNameGenerator beanNameGenerator, BeanDefinitionRegistry registry, BeansProperties beansProperties) {
+                                                 BeanNameGenerator beanNameGenerator, BeanDefinitionRegistry registry, BeansProperties beansProperties, String basePackage) {
 
         this.environment = environment;
         this.resourceLoader = resourceLoader;
         this.beanNameGenerator = beanNameGenerator;
         this.registry = registry;
         this.beansProperties = beansProperties;
+        this.basePackage = basePackage;
     }
 
 
@@ -119,6 +122,8 @@ class BusinessComponentScanAnnotationParser {
         if (basePackages.isEmpty()) {
             basePackages.add(ClassUtils.getPackageName(declaringClass));
         }
+
+        basePackages.add(this.basePackage);
 
         scanner.addExcludeFilter(new AbstractTypeHierarchyTraversingFilter(false, false) {
             @Override

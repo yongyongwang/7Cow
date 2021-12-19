@@ -8,6 +8,7 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.parsing.FailFastProblemReporter;
 import org.springframework.beans.factory.parsing.PassThroughSourceExtractor;
@@ -77,6 +78,16 @@ public class BusinessClassPostProcessor implements BeanDefinitionRegistryPostPro
 
     @Resource
     private BeansProperties beansProperties;
+
+    private String basePackage;
+
+    public String getBasePackage() {
+        return basePackage;
+    }
+
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
+    }
 
     /* Using fully qualified class names as default bean names */
     private BeanNameGenerator importBeanNameGenerator = new AnnotationBeanNameGenerator() {
@@ -234,7 +245,7 @@ public class BusinessClassPostProcessor implements BeanDefinitionRegistryPostPro
         // Parse each @Configuration class
         BusinessConfigurationClassParser parser = new BusinessConfigurationClassParser(
                 this.metadataReaderFactory, this.problemReporter, this.environment,
-                this.resourceLoader, this.componentScanBeanNameGenerator, registry, beansProperties);
+                this.resourceLoader, this.componentScanBeanNameGenerator, registry, beansProperties, basePackage);
 
         Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
         Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());

@@ -28,7 +28,7 @@ public class BeansProperties {
     /**
      * 子容器应用扫描包路径列表
      */
-    private List<Class<?>> appBasePackages;
+    private List<String> appBasePackages;
 
     public List<String> getBasePackages() {
         return basePackages;
@@ -54,11 +54,11 @@ public class BeansProperties {
         this.excludeFilters = excludeFilters;
     }
 
-    public List<Class<?>> getAppBasePackages() {
+    public List<String> getAppBasePackages() {
         return appBasePackages;
     }
 
-    public void setAppBasePackages(List<Class<?>> appBasePackages) {
+    public void setAppBasePackages(List<String> appBasePackages) {
         this.appBasePackages = appBasePackages;
     }
 }
