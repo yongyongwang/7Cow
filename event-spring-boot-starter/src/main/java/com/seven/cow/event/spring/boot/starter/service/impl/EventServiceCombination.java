@@ -5,6 +5,7 @@ import com.seven.cow.event.spring.boot.starter.service.EventRunnable;
 import com.seven.cow.event.spring.boot.starter.service.EventService;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class EventServiceCombination implements InitializingBean {
 
-    @Resource
+    @Autowired(required = false)
     private List<EventCallbackService> eventCallbackServices;
 
     @Resource
