@@ -14,13 +14,12 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 初始化业务 @Controller 接口
@@ -91,25 +90,39 @@ public class BusinessControllerInitialize implements ApplicationListener<Context
     }
 
     public static void loggingMapping(int contentTotal) {
-//        for (; ; ) {
-//            synchronized (atomicInteger) {
-//                if (contentTotal == atomicInteger.get()) {
-//                    break;
-//                } else {
-//                    try {
-//                        atomicInteger.wait();
-//                    } catch (InterruptedException e) {
-//                        LoggerUtils.error(e.getMessage(), e);
-//                    }
-//                }
-//            }
-//        }
-//        StringBuilder sb = new StringBuilder();
-//        MAPPING_LOGGING.forEach((userType, methods) ->
-//        {
-//            sb.append(LoggerUtils.formatMappings(userType, methods));
-//        });
-//        LoggerUtils.info(sb.toString());
+        for (; ; ) {
+            synchronized (atomicInteger) {
+                if (contentTotal == atomicInteger.get()) {
+                    break;
+                } else {
+                    try {
+                        atomicInteger.wait();
+                    } catch (InterruptedException e) {
+                        LoggerUtils.error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        MAPPING_LOGGING.forEach((userType, methods) ->
+                sb.append(formatMappings(userType, methods)));
+        LoggerUtils.info(sb.toString());
+    }
+
+    public static String formatMappings(Class<?> userType, Map<Method, String> methods) {
+        String formattedType = Arrays.stream(ClassUtils.getPackageName(userType).split("\\."))
+                .map(p -> p.substring(0, 1))
+                .collect(Collectors.joining(".", "", "." + userType.getSimpleName()));
+        Function<Method, String> methodFormatter = method -> Arrays.stream(method.getParameterTypes())
+                .map(Class::getSimpleName)
+                .collect(Collectors.joining(",", "(", ")"));
+        return methods.entrySet().stream()
+                .map(e ->
+                {
+                    Method method = e.getKey();
+                    return e.getValue() + ": " + method.getName() + methodFormatter.apply(method);
+                })
+                .collect(Collectors.joining("\n\t", "\n\t" + formattedType + ":" + "\n\t", ""));
     }
 
 }

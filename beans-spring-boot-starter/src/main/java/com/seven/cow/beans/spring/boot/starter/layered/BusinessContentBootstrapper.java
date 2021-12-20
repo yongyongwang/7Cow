@@ -71,6 +71,8 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                             .build();
                     appContent.refresh();
                 }
+                int contentTotal = appBasePackages.size();
+                BusinessControllerInitialize.loggingMapping(contentTotal);
             }
         }
     }
