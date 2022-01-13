@@ -57,7 +57,7 @@ public class RequestAspect {
                         || o instanceof MultipartFile))
                 .map(o -> {
                     try {
-                        return objectMapper.writeValueAsString(0);
+                        return objectMapper.writeValueAsString(o);
                     } catch (JsonProcessingException e) {
                         LoggerUtils.error("rest controller cast to json exception:", e);
                     }
