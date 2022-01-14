@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @see HttpServletResponseWrapper
  */
-class ContentCachingResponseWrapper extends org.springframework.web.util.ContentCachingResponseWrapper {
+class RequestCachingResponseWrapper extends org.springframework.web.util.ContentCachingResponseWrapper {
 
     private int status = 200;
 
@@ -36,7 +36,7 @@ class ContentCachingResponseWrapper extends org.springframework.web.util.Content
      *
      * @param response the original servlet response
      */
-    public ContentCachingResponseWrapper(HttpServletResponse response, boolean alwaysOk) {
+    public RequestCachingResponseWrapper(HttpServletResponse response, boolean alwaysOk) {
         super(response);
         this.alwaysOk = alwaysOk;
     }
