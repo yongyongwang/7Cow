@@ -4,7 +4,7 @@ import com.seven.cow.servlet.upload.properties.UploadProperties;
 import com.seven.cow.servlet.upload.service.UploadFileService;
 import com.seven.cow.servlet.upload.service.impl.FileInfo;
 import org.springframework.core.Ordered;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
@@ -30,7 +30,7 @@ public class FileUploadFilter extends OncePerRequestFilter implements Ordered {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        byte[] bytes = FileCopyUtils.copyToByteArray(request.getInputStream());
+        byte[] bytes = StreamUtils.copyToByteArray(request.getInputStream());
         FileInfo fileInfo = uploadFileService.upload(bytes, uploadProperties.getStoreAddress());
         byte[] json = uploadFileService.writeResponseInfo(fileInfo);
         response.getOutputStream().write(json);
