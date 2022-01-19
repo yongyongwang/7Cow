@@ -36,12 +36,10 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        RequestCachingRequestWrapper cachingRequestWrapper = new RequestCachingRequestWrapper(httpServletRequest);
-        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, !loggingProperties.isAlwaysOk());
         String requestUrl = httpServletRequest.getRequestURL().toString();
         String queryString = httpServletRequest.getQueryString();
         if (!StringUtils.isEmpty(queryString)) {
-            queryString = URLDecoder.decode(queryString, cachingRequestWrapper.getCharacterEncoding());
+            queryString = URLDecoder.decode(queryString, httpServletRequest.getCharacterEncoding());
             requestUrl += "?" + queryString;
         }
         String method = httpServletRequest.getMethod();
@@ -62,7 +60,10 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             parameters.add((parameterName + "=" + parameterValue));
             CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, parameterValue);
         }
+        RequestCachingRequestWrapper cachingRequestWrapper = new RequestCachingRequestWrapper(httpServletRequest);
+        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, !loggingProperties.isAlwaysOk());
         // endregion 读取请求参数
+
         byte[] reqBytes = cachingRequestWrapper.getContentAsByteArray();
         CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
         VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> LoggerUtils.info("------ > Request Parameters: " + String.join("&", parameters)));

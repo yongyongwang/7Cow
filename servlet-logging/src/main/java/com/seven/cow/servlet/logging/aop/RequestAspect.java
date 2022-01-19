@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Order(-2)
 public class RequestAspect {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping) " +
             "&& !@annotation(IgnoreLogging)")
@@ -49,7 +49,8 @@ public class RequestAspect {
         stopWatch.start();
         LoggerUtils.info("------ > Rest Input: " + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs())
                 .filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse
-                        || o instanceof MultipartFile))
+                        || o instanceof MultipartFile
+                        || o instanceof MultipartFile[]))
                 .map(o -> {
                     try {
                         return objectMapper.writeValueAsString(o);
