@@ -7,6 +7,16 @@ import java.util.Map;
 public interface DataAccessService {
 
     /**
+     * 转移数据对象所有权
+     *
+     * @param domainId 数据所属域
+     * @param dataId   数据对象
+     * @param ownerId  数据拥有者
+     * @return 数据权限Id
+     */
+    String transferDataAccess(String domainId, String dataId, String ownerId);
+
+    /**
      * 新增/更新数据对象访问权限
      * DataAccess.NONE ,清空权限记录
      *

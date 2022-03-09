@@ -25,4 +25,6 @@ public interface DataAccessDao {
 
     int insertObject(DataObject dataObject);
 
+    int updateObject(Long id, String ownerId);
+
 }

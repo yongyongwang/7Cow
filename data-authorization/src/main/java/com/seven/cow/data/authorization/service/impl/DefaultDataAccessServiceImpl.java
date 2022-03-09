@@ -24,6 +24,20 @@ public class DefaultDataAccessServiceImpl implements DataAccessService {
     private DataAccessDao dataAccessDao;
 
     @Override
+    public String transferDataAccess(String domainId, String dataId, String ownerId) {
+        DataObject dataObject = dataAccessDao.selectObjectByDomainIdAndDataId(domainId, dataId);
+        if (null != dataObject && !dataObject.getOwnerId().equalsIgnoreCase(ownerId)) {
+            DataAuthorization dataAuthorization = dataAccessDao.selectAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId, dataObject.getOwnerId());
+            if (null != dataAuthorization) {
+                this.upsertDataAccess(dataAuthorization.getDomainId(), dataAuthorization.getDataId(), dataAuthorization.getDataAccessId(), DataAccess.NONE);
+            }
+            dataAccessDao.updateObject(dataObject.getId(), ownerId);
+            return this.upsertDataAccess(dataObject.getDomainId(), dataObject.getDataId(), ownerId, DataAccess.READ_WRITE_EXECUTE);
+        }
+        return null;
+    }
+
+    @Override
     public String upsertDataAccess(String domainId, String dataId, String dataAccessId, DataAccess dataAccess) {
         DataAuthorization dataAuthorization = dataAccessDao.selectAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId, dataAccessId);
         DataObject dataObject = dataAccessDao.selectObjectByDomainIdAndDataId(domainId, dataId);
