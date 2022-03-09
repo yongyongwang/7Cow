@@ -35,7 +35,12 @@ public class DefaultDataAccessDaoImpl implements DataAccessDao {
     }
 
     @Override
-    public int updateAccessById(Long id, Integer dataAccess) {
+    public int updateAccessByIds(List<Long> ids, Integer dataAccess) {
+        return 0;
+    }
+
+    @Override
+    public int deleteAccessByIds(List<Long> ids) {
         return 0;
     }
 
