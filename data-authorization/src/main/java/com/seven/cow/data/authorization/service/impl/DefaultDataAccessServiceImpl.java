@@ -26,17 +26,19 @@ public class DefaultDataAccessServiceImpl implements DataAccessService {
     @Override
     public String upsertDataAccess(String domainId, String dataId, String dataAccessId, DataAccess dataAccess) {
         DataAuthorization dataAuthorization = dataAccessDao.selectAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId, dataAccessId);
+        DataObject dataObject = dataAccessDao.selectObjectByDomainIdAndDataId(domainId, dataId);
         if (null != dataAuthorization) {
-            if (DataAccess.NONE.equals(dataAccess)) {
-                dataAccessDao.deleteAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId, dataAccessId);
-            } else {
-                Builder.of(dataAuthorization)
-                        .with(DataAuthorization::setDataAccess, dataAccess.getCode())
-                        .build();
-                dataAccessDao.updateAccessByIds(Collections.singletonList(dataAuthorization.getId()), dataAuthorization.getDataAccess());
+            if (null != dataObject && !dataObject.getOwnerId().equalsIgnoreCase(dataAuthorization.getDataAccessId())) {
+                if (DataAccess.NONE.equals(dataAccess)) {
+                    dataAccessDao.deleteAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId, dataAccessId);
+                } else {
+                    Builder.of(dataAuthorization)
+                            .with(DataAuthorization::setDataAccess, dataAccess.getCode())
+                            .build();
+                    dataAccessDao.updateAccessByIds(Collections.singletonList(dataAuthorization.getId()), dataAuthorization.getDataAccess());
+                }
             }
         } else {
-            DataObject dataObject = dataAccessDao.selectObjectByDomainIdAndDataId(domainId, dataId);
             if (null == dataObject) {
                 dataObject = Builder.of(DataObject::new)
                         .with(DataObject::setDataId, dataId)
