@@ -15,7 +15,9 @@ public interface DataAccessDao {
 
     List<DataAuthorization> selectAccessByDomainIdAndDataAccessId(String domainId, String dataAccessId);
 
-    int updateAccessById(Long id, Integer dataAccess);
+    int updateAccessByIds(List<Long> ids, Integer dataAccess);
+
+    int deleteAccessByIds(List<Long> ids);
 
     int insertAccess(DataAuthorization dataAuthorization);
 
