@@ -19,7 +19,7 @@ public interface DataAccessService {
     String upsertDataAccess(String domainId, String dataId, String dataAccessId, DataAccess dataAccess);
 
     /**
-     * 批量更新数据对象访问数据权限,无法更新数据对象拥有者权限
+     * 批量更新数据对象访问数据权限,不更新数据对象拥有者权限
      *
      * @param domainId   数据所属域
      * @param dataId     数据对象
