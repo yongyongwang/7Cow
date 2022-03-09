@@ -17,6 +17,7 @@
         <module>beans-spring-boot-starter</module>
         <module>event-spring-boot-starter</module>
         <module>jsch-spring-boot-starter</module>
+        <module>data-authorization</module>
     </modules>
     <packaging>pom</packaging>
     <name>7Cow:${project.version}</name>
