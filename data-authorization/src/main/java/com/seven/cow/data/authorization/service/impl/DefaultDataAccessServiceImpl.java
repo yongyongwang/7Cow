@@ -85,7 +85,7 @@ public class DefaultDataAccessServiceImpl implements DataAccessService {
     @Override
     public int updateDataAccess(String domainId, String dataId, DataAccess dataAccess) {
         DataObject dataObject = dataAccessDao.selectObjectByDomainIdAndDataId(domainId, dataId);
-        List<DataAuthorization> dataAuthorizations = dataAccessDao.selectAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId);
+        List<DataAuthorization> dataAuthorizations = dataAccessDao.selectAccessListByDomainIdAndDataId(domainId, dataId);
         int i = 0;
         if (null != dataObject && !CollectionUtils.isEmpty(dataAuthorizations)) {
             List<Long> ids = dataAuthorizations.stream().filter(dataAuthorization ->

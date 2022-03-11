@@ -30,13 +30,13 @@ public class DefaultDataAccessDaoImpl implements DataAccessDao {
     }
 
     @Override
-    public List<DataAuthorization> selectAccessByDomainIdAndDataIdAndDataAccessId(String domainId, String dataId) {
-        return dataObjectMapper.selectAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId);
+    public List<DataAuthorization> selectAccessListByDomainIdAndDataId(String domainId, String dataId) {
+        return dataObjectMapper.selectAccessListByDomainIdAndDataId(domainId, dataId);
     }
 
     @Override
     public List<DataAuthorization> selectAccessByDomainIdAndDataAccessId(String domainId, String dataAccessId) {
-        return dataObjectMapper.selectAccessByDomainIdAndDataAccessId(domainId, dataAccessId);
+        return dataObjectMapper.selectAccessListByDomainIdAndDataAccessId(domainId, dataAccessId);
     }
 
     @Override

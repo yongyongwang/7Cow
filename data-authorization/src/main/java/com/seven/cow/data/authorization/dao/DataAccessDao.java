@@ -11,7 +11,7 @@ public interface DataAccessDao {
 
     DataAuthorization selectAccessByDomainIdAndDataIdAndDataAccessId(String domainId, String dataId, String dataAccessId);
 
-    List<DataAuthorization> selectAccessByDomainIdAndDataIdAndDataAccessId(String domainId, String dataId);
+    List<DataAuthorization> selectAccessListByDomainIdAndDataId(String domainId, String dataId);
 
     List<DataAuthorization> selectAccessByDomainIdAndDataAccessId(String domainId, String dataAccessId);
 

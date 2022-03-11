@@ -35,7 +35,7 @@ public interface DataObjectMapper {
             + Table.DataAccess.COLUMN_DOMAIN_ID + " as domainId from " +
             Table.DataAccess.TABLE_NAME + " where " + Table.DataAccess.COLUMN_DOMAIN_ID + "=#{domainId} and "
             + Table.DataAccess.COLUMN_DATA_ID + "=#{dataId} ")
-    List<DataAuthorization> selectAccessByDomainIdAndDataIdAndDataAccessId(@Param("domainId") String domainId, @Param("dataId") String dataId);
+    List<DataAuthorization> selectAccessListByDomainIdAndDataId(@Param("domainId") String domainId, @Param("dataId") String dataId);
 
     @Select("select " + Table.DataAccess.COLUMN_ID + " as id,"
             + Table.DataAccess.COLUMN_DATA_ACCESS_ID + " as dataAccessId,"
@@ -44,7 +44,7 @@ public interface DataObjectMapper {
             + Table.DataAccess.COLUMN_DOMAIN_ID + " as domainId from " +
             Table.DataAccess.TABLE_NAME + " where " + Table.DataAccess.COLUMN_DOMAIN_ID + "=#{domainId} "
             + "and " + Table.DataAccess.COLUMN_DATA_ACCESS_ID + "=#{dataAccessId}")
-    List<DataAuthorization> selectAccessByDomainIdAndDataAccessId(@Param("domainId") String domainId, @Param("dataAccessId") String dataAccessId);
+    List<DataAuthorization> selectAccessListByDomainIdAndDataAccessId(@Param("domainId") String domainId, @Param("dataAccessId") String dataAccessId);
 
     @Update({"<script>", "update " + Table.DataAccess.TABLE_NAME + " set " + Table.DataAccess.COLUMN_DATA_ACCESS + "=#{dataAccess}" +
             " where " + Table.DataAccess.COLUMN_ID + " in ", "<foreach collection=\"ids\" item=\"id\" index=\"index\" open=\"(\" separator=\",\" close=\")\">",
