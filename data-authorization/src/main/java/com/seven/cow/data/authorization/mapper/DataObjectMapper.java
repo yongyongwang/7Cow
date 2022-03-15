@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper
 public interface DataObjectMapper {
 
-    @Update({"CREATE TABLE IF NOT EXISTS `" + "#{tableName}" + "` (" +
+    @Update({"CREATE TABLE IF NOT EXISTS `" + "${tableName}" + "` (" +
             "`" + Table.DataObject.COLUMN_ID + "` bigint auto_increment NOT NULL," +
             "`" + Table.DataObject.COLUMN_DOMAIN_ID + "` varchar(255) default NULL," +
             "`" + Table.DataObject.COLUMN_DATA_ID + "` varchar(255) default NULL," +
@@ -24,7 +24,7 @@ public interface DataObjectMapper {
             "PRIMARY KEY (`" + Table.DataObject.COLUMN_ID + "`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"})
     void initTableDataObject(@Param("tableName") String tableName);
 
-    @Update({"CREATE TABLE IF NOT EXISTS `" + "#{tableName}" + "` (" +
+    @Update({"CREATE TABLE IF NOT EXISTS `" + "${tableName}" + "` (" +
             "`" + Table.DataAccess.COLUMN_ID + "` bigint auto_increment NOT NULL," +
             "`" + Table.DataAccess.COLUMN_DOMAIN_ID + "` varchar(255) default NULL," +
             "`" + Table.DataAccess.COLUMN_DATA_ID + "` varchar(255) default NULL," +
