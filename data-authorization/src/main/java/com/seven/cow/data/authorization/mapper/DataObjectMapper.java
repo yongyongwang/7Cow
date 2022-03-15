@@ -16,22 +16,22 @@ import java.util.List;
 @Mapper
 public interface DataObjectMapper {
 
-    @Update({"CREATE TABLE IF NOT EXISTS `" + Table.DataObject.TABLE_NAME + "` (" +
+    @Update({"CREATE TABLE IF NOT EXISTS `" + "#{tableName}" + "` (" +
             "`" + Table.DataObject.COLUMN_ID + "` bigint auto_increment NOT NULL," +
             "`" + Table.DataObject.COLUMN_DOMAIN_ID + "` varchar(255) default NULL," +
             "`" + Table.DataObject.COLUMN_DATA_ID + "` varchar(255) default NULL," +
             "`" + Table.DataObject.COLUMN_OWNER_ID + "` varchar(255) default NULL," +
             "PRIMARY KEY (`" + Table.DataObject.COLUMN_ID + "`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"})
-    void initTableDataObject();
+    void initTableDataObject(@Param("tableName") String tableName);
 
-    @Update({"CREATE TABLE IF NOT EXISTS `" + Table.DataAccess.TABLE_NAME + "` (" +
+    @Update({"CREATE TABLE IF NOT EXISTS `" + "#{tableName}" + "` (" +
             "`" + Table.DataAccess.COLUMN_ID + "` bigint auto_increment NOT NULL," +
             "`" + Table.DataAccess.COLUMN_DOMAIN_ID + "` varchar(255) default NULL," +
             "`" + Table.DataAccess.COLUMN_DATA_ID + "` varchar(255) default NULL," +
             "`" + Table.DataAccess.COLUMN_DATA_ACCESS_ID + "` varchar(255) default NULL," +
             "`" + Table.DataAccess.COLUMN_DATA_ACCESS + "` int default NULL," +
             "PRIMARY KEY (`" + Table.DataObject.COLUMN_ID + "`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"})
-    void initTableDataAccess();
+    void initTableDataAccess(@Param("tableName") String tableName);
 
     @Delete("delete from " + Table.DataAccess.TABLE_NAME + " where " + Table.DataAccess.COLUMN_DOMAIN_ID + "=#{domainId} and " + Table.DataAccess.COLUMN_DATA_ID + "=#{dataId} and " + Table.DataAccess.COLUMN_DATA_ACCESS_ID + "=#{dataAccessId}")
     int deleteAccessByDomainIdAndDataIdAndDataAccessId(@Param("domainId") String domainId, @Param("dataId") String dataId, @Param("dataAccessId") String dataAccessId);

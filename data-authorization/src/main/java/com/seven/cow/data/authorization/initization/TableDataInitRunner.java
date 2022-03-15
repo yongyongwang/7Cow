@@ -1,5 +1,6 @@
 package com.seven.cow.data.authorization.initization;
 
+import com.seven.cow.data.authorization.constants.Table;
 import com.seven.cow.data.authorization.mapper.DataObjectMapper;
 import org.springframework.boot.CommandLineRunner;
 
@@ -18,7 +19,7 @@ public class TableDataInitRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        dataObjectMapper.initTableDataObject();
-        dataObjectMapper.initTableDataAccess();
+        dataObjectMapper.initTableDataObject(Table.DataObject.TABLE_NAME);
+        dataObjectMapper.initTableDataAccess(Table.DataAccess.TABLE_NAME);
     }
 }
