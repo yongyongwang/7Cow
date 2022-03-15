@@ -29,7 +29,7 @@ public class DefaultDataAccessServiceImpl implements DataAccessService {
         if (null != dataObject && !dataObject.getOwnerId().equalsIgnoreCase(ownerId)) {
             DataAuthorization dataAuthorization = dataAccessDao.selectAccessByDomainIdAndDataIdAndDataAccessId(domainId, dataId, dataObject.getOwnerId());
             if (null != dataAuthorization) {
-                this.upsertDataAccess(dataAuthorization.getDomainId(), dataAuthorization.getDataId(), dataAuthorization.getDataAccessId(), DataAccess.NONE);
+                dataAccessDao.deleteAccessByIds(Collections.singletonList(dataAuthorization.getId()));
             }
             dataAccessDao.updateObject(dataObject.getId(), ownerId);
             return this.upsertDataAccess(dataObject.getDomainId(), dataObject.getDataId(), ownerId, DataAccess.READ_WRITE_EXECUTE);
