@@ -4,6 +4,7 @@ import com.seven.cow.data.authorization.dao.DataAccessDao;
 import com.seven.cow.data.authorization.dao.impl.DefaultDataAccessDaoImpl;
 import com.seven.cow.data.authorization.initization.TableDataInitRunner;
 import com.seven.cow.data.authorization.mapper.DataObjectMapper;
+import com.seven.cow.data.authorization.properties.DataAuthorizationProperties;
 import com.seven.cow.data.authorization.service.DataAccessService;
 import com.seven.cow.data.authorization.service.impl.DefaultDataAccessServiceImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @AutoConfigureAfter({MybatisAutoConfiguration.class})
+@EnableConfigurationProperties(DataAuthorizationProperties.class)
 public class DataAuthorizationAutoConfiguration {
 
     @Bean
