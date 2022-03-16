@@ -55,5 +55,14 @@ public final class BeanUtils {
         return bean;
     }
 
+    public static <T> T newInstance(Class<T> targetClass) {
+        try {
+            return targetClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
 
 }
