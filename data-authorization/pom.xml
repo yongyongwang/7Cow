@@ -11,6 +11,8 @@
 
     <artifactId>data-authorization</artifactId>
 
+    <name>data-authorization:${project.version}</name>
+
     <dependencies>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
