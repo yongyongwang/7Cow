@@ -44,14 +44,9 @@ public final class BeanUtils {
     }
 
     public static <T> T convertToBean(Map<String, Object> map, Class<T> targetClass) {
-        T bean = null;
-        try {
-            bean = targetClass.newInstance();
-            BeanMap beanMap = BeanMap.create(bean);
-            beanMap.putAll(map);
-        } catch (InstantiationException | IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        }
+        T bean = newInstance(targetClass);
+        BeanMap beanMap = BeanMap.create(bean);
+        beanMap.putAll(map);
         return bean;
     }
 
