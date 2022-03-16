@@ -64,6 +64,7 @@ public final class Builder<T> {
         T newValue;
         Class<T> targetClass = (Class<T>) value.getClass();
         newValue = BeanUtils.newInstance(targetClass);
+        assert newValue != null;
         BeanUtils.copyProperties(value, newValue);
         T finalNewValue = newValue;
         modifiers.forEach(modifier -> modifier.accept(finalNewValue));
