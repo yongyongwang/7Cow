@@ -1,6 +1,7 @@
 package com.seven.cow.jsch.spring.boot.starter.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class SshProperties {
     /**
      * ssh 跳板机代理配置信息
      */
+    @NestedConfigurationProperty
     private List<SshProxyProperties> proxy;
 
     public String getHost() {
