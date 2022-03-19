@@ -1,11 +1,14 @@
 package com.seven.cow.beans.spring.boot.starter.layered;
 
+import com.seven.cow.beans.spring.boot.starter.annotations.OuterService;
 import com.seven.cow.beans.spring.boot.starter.empty.BeanEmpty;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
+import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -21,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -70,6 +74,17 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                             .with(AnnotationConfigApplicationContext::registerBeanDefinition, AnnotationConfigUtils.CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME, def)
                             .build();
                     appContent.refresh();
+                    Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
+                    if (outerServiceMap.size() > 0) {
+                        ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+                        for (Map.Entry<String, Object> kv : outerServiceMap.entrySet()) {
+                            if (!beanFactory.containsBean(kv.getKey())) {
+                                beanFactory.registerSingleton(kv.getKey(), kv.getValue());
+                            } else {
+                                LoggerUtils.warn("bean name --- > " + kv.getKey() + " exists multiple implementations！");
+                            }
+                        }
+                    }
                 }
                 int contentTotal = appBasePackages.size();
                 BusinessControllerInitialize.loggingMapping(contentTotal);
