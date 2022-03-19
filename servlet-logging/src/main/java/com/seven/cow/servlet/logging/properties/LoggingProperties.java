@@ -14,6 +14,11 @@ import java.util.List;
 public class LoggingProperties {
 
     /**
+     * 是否打印记录请求日志
+     */
+    private Boolean print = true;
+
+    /**
      * 不记录日志请求表达式列表
      */
     private List<String> excludePatterns;
@@ -27,6 +32,14 @@ public class LoggingProperties {
      * 是否屏蔽异常请求状态码，默认全部返回 404
      */
     private boolean alwaysOk = true;
+
+    public Boolean getPrint() {
+        return print;
+    }
+
+    public void setPrint(Boolean print) {
+        this.print = print;
+    }
 
     public List<String> getExcludePatterns() {
         return excludePatterns;

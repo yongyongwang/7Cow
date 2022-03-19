@@ -43,8 +43,8 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             requestUrl += "?" + queryString;
         }
         String method = httpServletRequest.getMethod();
-        LoggerUtils.info(">>>>>> > Begin RequestURL: " + requestUrl);
-        LoggerUtils.info("------ > Request Method: " + method);
+        info(">>>>>> > Begin RequestURL: " + requestUrl);
+        info("------ > Request Method: " + method);
 
         // region 读取请求参数
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
@@ -66,9 +66,9 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
 
         byte[] reqBytes = cachingRequestWrapper.getContentAsByteArray();
         CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
-        VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> LoggerUtils.info("------ > Request Parameters: " + String.join("&", parameters)));
+        VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> info("------ > Request Parameters: " + String.join("&", parameters)));
         String payload = new String(reqBytes, cachingRequestWrapper.getCharacterEncoding());
-        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> LoggerUtils.info("------ > Request Payload: " + payload));
+        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> info("------ > Request Payload: " + payload));
         try {
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } catch (Throwable ex) {
@@ -76,18 +76,30 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             cachingResponseWrapper.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
-            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> LoggerUtils.info("rest process exception:", (Throwable) CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> info("rest process exception:", CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getErrorStatus());
             rtnValue = responseFilterService.handle(rspStatus.value(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            LoggerUtils.info("< ------ Response(" + rspStatus.value() + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
-            LoggerUtils.info("< <<<<<< End RequestURL: " + requestUrl);
+            info("< ------ Response(" + rspStatus.value() + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
+            info("< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }
 
+    }
+
+    public void info(String message) {
+        if (loggingProperties.getPrint()) {
+            LoggerUtils.info(message);
+        }
+    }
+
+    public void info(String message, Throwable ex) {
+        if (loggingProperties.getPrint()) {
+            LoggerUtils.info(message, ex);
+        }
     }
 
     protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
