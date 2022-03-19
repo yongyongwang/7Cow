@@ -28,6 +28,7 @@ public class ServletLoggingAutoConfiguration {
 
     @ConditionalOnClass(name = "org.aspectj.lang.annotation.Aspect")
     @Bean("x-requestAspect")
+    @ConditionalOnMissingBean
     public RequestAspect requestAspect() {
         return new RequestAspect();
     }
