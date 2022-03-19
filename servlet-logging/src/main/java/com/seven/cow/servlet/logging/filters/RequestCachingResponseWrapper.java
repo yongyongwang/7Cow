@@ -51,6 +51,11 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
     }
 
     @Override
+    public void setStatus(int sc) {
+        this.status = sc;
+    }
+
+    @Override
     public void sendError(int sc)
             throws IOException {
         copyBodyToResponse(false);

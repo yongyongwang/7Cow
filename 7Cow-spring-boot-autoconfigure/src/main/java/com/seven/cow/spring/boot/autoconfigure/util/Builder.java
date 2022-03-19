@@ -59,6 +59,19 @@ public final class Builder<T> {
         return value;
     }
 
+    public T newBuild() {
+        T value = null != instantiator ? instantiator.get() : instance;
+        T newValue;
+        Class<T> targetClass = (Class<T>) value.getClass();
+        newValue = BeanUtils.newInstance(targetClass);
+        assert newValue != null;
+        BeanUtils.copyProperties(value, newValue);
+        T finalNewValue = newValue;
+        modifiers.forEach(modifier -> modifier.accept(finalNewValue));
+        modifiers.clear();
+        return newValue;
+    }
+
     /**
      * 1 参数 Consumer
      */

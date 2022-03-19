@@ -30,34 +30,66 @@ public final class RsaUtils {
         return getKeyPair(KEY_SIZE);
     }
 
+    /**
+     * 获取秘钥对
+     *
+     * @param keySize 密钥长度
+     * @return 密钥对
+     * @throws Exception 异常
+     */
     public static KeyPair getKeyPair(int keySize) throws Exception {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(KEY_SIZE);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        return keyPair;
+        return keyPairGenerator.generateKeyPair();
     }
 
-    //公钥加密
+    /**
+     * 获取公钥(Base64编码)
+     */
+    public static String getPublicKey(KeyPair keyPair) {
+        PublicKey publicKey = keyPair.getPublic();
+        byte[] bytes = publicKey.getEncoded();
+        return bytesToBase64(bytes);
+    }
+
+    /**
+     * 获取私钥(Base64编码)
+     */
+    public static String getPrivateKey(KeyPair keyPair) {
+        PrivateKey privateKey = keyPair.getPrivate();
+        byte[] bytes = privateKey.getEncoded();
+        return bytesToBase64(bytes);
+    }
+
+    /**
+     * 公钥加密
+     */
     public static byte[] publicEncrypt(byte[] content, PublicKey publicKey) throws Exception {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(content);
     }
 
-    //私钥解密
+    /**
+     * 私钥解密
+     */
     public static byte[] privateDecrypt(byte[] content, PrivateKey privateKey) throws Exception {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(content);
     }
 
-    //字节数组转Base64编码
+    /**
+     * 字节数组转Base64编码
+     */
     public static String bytesToBase64(byte[] bytes) {
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(bytes);
     }
 
-    //Base64编码转字节数组
+    /**
+     * Base64编码转字节数组
+     */
     public static byte[] base64ToBytes(String base64Key) throws IOException {
         Base64.Decoder decoder = Base64.getDecoder();
         return decoder.decode(base64Key);
