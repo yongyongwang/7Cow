@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ public class DataAuthorizationAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(value = "data.authorization.enabled", havingValue = "true")
     public CommandLineRunner tableInitCommandLineRunner() {
         return new TableDataInitRunner();
     }

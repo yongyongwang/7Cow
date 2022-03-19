@@ -12,10 +12,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "data.authorization")
 public class DataAuthorizationProperties {
 
-    private Boolean enabled = false;
+    /**
+     * 是否初始化表
+     */
+    private Boolean enabled;
 
+    /**
+     * 数据对象表名称
+     */
     private String dataObjectTableName = Table.DataObject.TABLE_NAME;
 
+    /**
+     * 数据对象访问表名称
+     */
     private String dataAccessTableName = Table.DataAccess.TABLE_NAME;
 
     public Boolean getEnabled() {
