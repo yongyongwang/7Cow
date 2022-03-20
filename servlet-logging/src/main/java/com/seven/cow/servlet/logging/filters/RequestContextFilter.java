@@ -90,13 +90,13 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
 
     }
 
-    public void info(String message) {
+    private void info(String message) {
         if (loggingProperties.getPrint()) {
             LoggerUtils.info(message);
         }
     }
 
-    public void info(String message, Throwable ex) {
+    private void info(String message, Throwable ex) {
         if (loggingProperties.getPrint()) {
             LoggerUtils.info(message, ex);
         }
