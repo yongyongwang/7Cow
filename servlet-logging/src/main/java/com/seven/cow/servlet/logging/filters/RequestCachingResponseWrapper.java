@@ -53,6 +53,7 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
     @Override
     public void setStatus(int sc) {
         this.status = sc;
+        super.setStatus(sc);
     }
 
     @Override
