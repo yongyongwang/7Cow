@@ -18,6 +18,7 @@
         <module>event-spring-boot-starter</module>
         <module>jsch-spring-boot-starter</module>
         <module>data-authorization</module>
+        <module>servlet-validator</module>
     </modules>
     <packaging>pom</packaging>
     <name>7Cow:${project.version}</name>
@@ -89,6 +90,11 @@
             <dependency>
                 <groupId>com.github.yongyongwang</groupId>
                 <artifactId>data-authorization</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yongyongwang</groupId>
+                <artifactId>servlet-validator</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
