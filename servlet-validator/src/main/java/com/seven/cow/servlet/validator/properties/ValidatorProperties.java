@@ -8,28 +8,15 @@ import java.util.List;
 public class ValidatorProperties {
 
     /**
-     * 请求路径表达式
+     * 校验规则
      */
-    private String requestPattern;
+    private List<ValidatorProperty> rules;
 
-    /**
-     * 字段校验规则
-     */
-    private List<Field> fields;
-
-    public String getRequestPattern() {
-        return requestPattern;
+    public List<ValidatorProperty> getRules() {
+        return rules;
     }
 
-    public void setRequestPattern(String requestPattern) {
-        this.requestPattern = requestPattern;
-    }
-
-    public List<Field> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setRules(List<ValidatorProperty> rules) {
+        this.rules = rules;
     }
 }
