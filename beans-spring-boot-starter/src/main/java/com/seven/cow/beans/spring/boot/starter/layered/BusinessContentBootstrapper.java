@@ -1,10 +1,9 @@
 package com.seven.cow.beans.spring.boot.starter.layered;
 
 import com.seven.cow.beans.spring.boot.starter.annotations.OuterService;
-import com.seven.cow.beans.spring.boot.starter.empty.BeanEmpty;
+import com.seven.cow.beans.spring.boot.starter.empty.BeanEmptyConfiguration;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
-import com.seven.cow.spring.boot.autoconfigure.annotations.InheritedBean;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.beans.BeansException;
@@ -71,20 +70,11 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                             .with(AnnotationConfigApplicationContext::setEnvironment, environment)
                             .with(AnnotationConfigApplicationContext::setParent, context)
                             .with(AnnotationConfigApplicationContext::setClassLoader, context.getClassLoader())
-                            .with(AnnotationConfigApplicationContext::register, BeanEmpty.class)
+                            .with(AnnotationConfigApplicationContext::register, BeanEmptyConfiguration.class)
                             .with(AnnotationConfigApplicationContext::registerBeanDefinition, AnnotationConfigUtils.CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME, def)
                             .build();
-                    appContent.refresh();
                     ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
-                    Map<String, Object> inheritsBeanMap = beanFactory.getBeansWithAnnotation(InheritedBean.class);
-                    if (inheritsBeanMap.size() > 0) {
-                        ConfigurableListableBeanFactory appBeanFactory = appContent.getBeanFactory();
-                        for (Map.Entry<String, Object> kv : inheritsBeanMap.entrySet()) {
-                            if (!appBeanFactory.containsLocalBean(kv.getKey())) {
-                                appBeanFactory.registerSingleton(kv.getKey(), kv.getValue());
-                            }
-                        }
-                    }
+                    appContent.refresh();
                     Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
                     if (outerServiceMap.size() > 0) {
                         for (Map.Entry<String, Object> kv : outerServiceMap.entrySet()) {
