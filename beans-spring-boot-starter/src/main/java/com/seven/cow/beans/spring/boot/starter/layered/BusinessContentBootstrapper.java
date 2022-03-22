@@ -76,11 +76,11 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                             .build();
                     appContent.refresh();
                     ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
-                    Map<String, Object> inheriteBeanMap = beanFactory.getBeansWithAnnotation(InheritedBean.class);
-                    if (inheriteBeanMap.size() > 0) {
+                    Map<String, Object> inheritsBeanMap = beanFactory.getBeansWithAnnotation(InheritedBean.class);
+                    if (inheritsBeanMap.size() > 0) {
                         ConfigurableListableBeanFactory appBeanFactory = appContent.getBeanFactory();
-                        for (Map.Entry<String, Object> kv : inheriteBeanMap.entrySet()) {
-                            if (!appBeanFactory.containsBean(kv.getKey())) {
+                        for (Map.Entry<String, Object> kv : inheritsBeanMap.entrySet()) {
+                            if (!appBeanFactory.containsLocalBean(kv.getKey())) {
                                 appBeanFactory.registerSingleton(kv.getKey(), kv.getValue());
                             }
                         }
