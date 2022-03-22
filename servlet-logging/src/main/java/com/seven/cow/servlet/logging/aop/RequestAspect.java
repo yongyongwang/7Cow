@@ -2,6 +2,7 @@ package com.seven.cow.servlet.logging.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seven.cow.spring.boot.autoconfigure.annotations.InheritedBean;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  **/
 @Aspect
 @Order(-2)
+@InheritedBean
 public class RequestAspect {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

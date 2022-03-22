@@ -4,6 +4,7 @@ import com.seven.cow.beans.spring.boot.starter.annotations.OuterService;
 import com.seven.cow.beans.spring.boot.starter.empty.BeanEmpty;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
+import com.seven.cow.spring.boot.autoconfigure.annotations.InheritedBean;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.beans.BeansException;
@@ -74,9 +75,18 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                             .with(AnnotationConfigApplicationContext::registerBeanDefinition, AnnotationConfigUtils.CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME, def)
                             .build();
                     appContent.refresh();
+                    ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+                    Map<String, Object> inheriteBeanMap = beanFactory.getBeansWithAnnotation(InheritedBean.class);
+                    if (inheriteBeanMap.size() > 0) {
+                        ConfigurableListableBeanFactory appBeanFactory = appContent.getBeanFactory();
+                        for (Map.Entry<String, Object> kv : inheriteBeanMap.entrySet()) {
+                            if (!appBeanFactory.containsBean(kv.getKey())) {
+                                appBeanFactory.registerSingleton(kv.getKey(), kv.getValue());
+                            }
+                        }
+                    }
                     Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
                     if (outerServiceMap.size() > 0) {
-                        ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
                         for (Map.Entry<String, Object> kv : outerServiceMap.entrySet()) {
                             if (!beanFactory.containsBean(kv.getKey())) {
                                 beanFactory.registerSingleton(kv.getKey(), kv.getValue());
