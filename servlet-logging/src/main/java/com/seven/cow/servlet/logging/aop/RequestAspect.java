@@ -17,11 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-/**
- * @ClassName RequestAspect
- * @Description 打印出入参
- * Version 0.0.1
- **/
 @Aspect
 @Order(-2)
 @InheritedBean
