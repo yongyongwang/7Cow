@@ -38,6 +38,9 @@ public class ValidatorAspect {
                         throw new ValidationException(validated.message());
                     }
                 } catch (Exception ex) {
+                    if (ex instanceof ValidationException) {
+                        throw ex;
+                    }
                     throw new ValidationException(validated.message(), ex);
                 }
             }
