@@ -34,7 +34,7 @@ public class LoggingProperties {
     private int order = 0;
 
     /**
-     * 是否屏蔽异常请求状态码，默认全部返回 404
+     * 是否屏蔽异常请求状态码，默认不屏蔽 ,true:屏蔽只要不是200，都返回404
      */
     private boolean alwaysOk = false;
 
