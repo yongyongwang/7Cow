@@ -2,11 +2,13 @@ package com.seven.cow.beans.spring.boot.starter.processor;
 
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
+import com.seven.cow.beans.spring.boot.starter.proxy.OuterServiceFactoryBean;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.VUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.AnnotationBeanNameGenerator;
@@ -18,6 +20,7 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -79,21 +82,40 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
                 LoggerUtils.error(e.getMessage(), e);
             }
         }
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(beanDefinitionRegistry,
+                true, this.environment, this.resourceLoader);
+        for (TypeFilter excludeFilter : excludeFilters) {
+            scanner.addExcludeFilter(excludeFilter);
+        }
+        for (TypeFilter includeFilter : includeFilters) {
+            scanner.addIncludeFilter(includeFilter);
+        }
         List<String> basePackages = beansProperties.getBasePackages();
         if (!CollectionUtils.isEmpty(basePackages)) {
-            ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(beanDefinitionRegistry,
-                    true, this.environment, this.resourceLoader);
-            for (TypeFilter excludeFilter : excludeFilters) {
-                scanner.addExcludeFilter(excludeFilter);
-            }
-            for (TypeFilter includeFilter : includeFilters) {
-                scanner.addIncludeFilter(includeFilter);
-            }
             for (String basePackage : basePackages) {
                 Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents(basePackage);
                 for (BeanDefinition beanDefinition : beanDefinitions) {
                     String beanName = beanNameGenerator.generateBeanName(beanDefinition, beanDefinitionRegistry);
                     beanDefinitionRegistry.registerBeanDefinition(beanName, beanDefinition);
+                }
+            }
+        }
+        List<String> appBasePackages = beansProperties.getAppBasePackages();
+        if (!CollectionUtils.isEmpty(appBasePackages)) {
+            for (String appBasePackage : appBasePackages) {
+                Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents(appBasePackage);
+                for (BeanDefinition beanDefinition : beanDefinitions) {
+                    String beanName = beanNameGenerator.generateBeanName(beanDefinition, beanDefinitionRegistry);
+                    String className = beanDefinition.getBeanClassName();
+                    BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(OuterServiceFactoryBean.class);
+                    BeanDefinition beanDefinitionProxy = builder.getBeanDefinition();
+                    try {
+                        assert className != null;
+                        beanDefinitionProxy.getConstructorArgumentValues().addGenericArgumentValue(ClassUtils.forName(className, this.classLoader));
+                    } catch (ClassNotFoundException e) {
+                        LoggerUtils.error(e.getMessage(), e);
+                    }
+                    beanDefinitionRegistry.registerBeanDefinition(beanName, beanDefinitionProxy);
                 }
             }
         }
