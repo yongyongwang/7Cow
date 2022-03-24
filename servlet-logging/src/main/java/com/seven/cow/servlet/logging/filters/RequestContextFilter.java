@@ -83,7 +83,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            info("< ------ Response(" + rspStatus.value() + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
+            info("< ------ Response(" + (loggingProperties.isAlwaysOk() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
             info("< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }

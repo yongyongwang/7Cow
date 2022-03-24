@@ -46,6 +46,10 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
         return (this.alwaysOk && this.status != 200) ? 404 : this.status;
     }
 
+    public int getLocalStatus() {
+        return this.status;
+    }
+
     @Override
     public void setStatus(int sc) {
         this.status = sc;
