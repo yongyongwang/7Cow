@@ -36,7 +36,7 @@ public class LoggingProperties {
     /**
      * 是否屏蔽异常请求状态码，默认全部返回 404
      */
-    private boolean alwaysOk = true;
+    private boolean alwaysOk = false;
 
     public Boolean getPrint() {
         return print;

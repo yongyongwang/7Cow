@@ -43,11 +43,7 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
 
     @Override
     public int getStatus() {
-        return this.alwaysOk ? 200 : this.status;
-    }
-
-    public int getErrorStatus() {
-        return this.status;
+        return (this.alwaysOk && this.status != 200) ? 404 : this.status;
     }
 
     @Override
