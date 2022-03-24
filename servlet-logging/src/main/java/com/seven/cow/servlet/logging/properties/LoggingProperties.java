@@ -19,6 +19,11 @@ public class LoggingProperties {
     private Boolean print = true;
 
     /**
+     * aop 打印controller出入参
+     */
+    private Boolean aopPrint = true;
+
+    /**
      * 不记录日志请求表达式列表
      */
     private List<String> excludePatterns;
@@ -39,6 +44,14 @@ public class LoggingProperties {
 
     public void setPrint(Boolean print) {
         this.print = print;
+    }
+
+    public Boolean getAopPrint() {
+        return aopPrint;
+    }
+
+    public void setAopPrint(Boolean aopPrint) {
+        this.aopPrint = aopPrint;
     }
 
     public List<String> getExcludePatterns() {
