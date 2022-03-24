@@ -4,6 +4,7 @@ import com.seven.cow.beans.spring.boot.starter.annotations.OuterService;
 import com.seven.cow.beans.spring.boot.starter.empty.BeanEmptyConfiguration;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
+import com.seven.cow.beans.spring.boot.starter.util.OuterServiceUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.beans.BeansException;
@@ -78,11 +79,7 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                     Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
                     if (outerServiceMap.size() > 0) {
                         for (Map.Entry<String, Object> kv : outerServiceMap.entrySet()) {
-                            if (!beanFactory.containsBean(kv.getKey())) {
-                                beanFactory.registerSingleton(kv.getKey(), kv.getValue());
-                            } else {
-                                LoggerUtils.warn("bean name --- > " + kv.getKey() + " exists multiple implementations！");
-                            }
+                            OuterServiceUtils.put(kv.getValue().getClass(), kv.getValue());
                         }
                     }
                 }
