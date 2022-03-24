@@ -6,6 +6,7 @@ import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.beans.spring.boot.starter.util.OuterServiceUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -76,7 +77,7 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                     Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
                     if (outerServiceMap.size() > 0) {
                         for (Map.Entry<String, Object> kv : outerServiceMap.entrySet()) {
-                            OuterServiceUtils.setOuterServiceProxyBean(kv.getValue().getClass(), kv.getValue());
+                            OuterServiceUtils.setOuterServiceProxyBean(AopUtils.getTargetClass(kv.getValue()), kv.getValue());
                         }
                     }
                 }
