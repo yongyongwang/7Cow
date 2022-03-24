@@ -76,7 +76,7 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                     Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
                     if (outerServiceMap.size() > 0) {
                         for (Map.Entry<String, Object> kv : outerServiceMap.entrySet()) {
-                            OuterServiceUtils.put(kv.getValue().getClass(), kv.getValue());
+                            OuterServiceUtils.setOuterServiceProxyBean(kv.getValue().getClass(), kv.getValue());
                         }
                     }
                 }

@@ -1,6 +1,8 @@
 package com.seven.cow.beans.spring.boot.starter.proxy;
 
+import com.seven.cow.beans.spring.boot.starter.util.OuterServiceUtils;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.cglib.proxy.Enhancer;
 
 
 public class OuterServiceFactoryBean implements FactoryBean<Object> {
@@ -12,8 +14,13 @@ public class OuterServiceFactoryBean implements FactoryBean<Object> {
     }
 
     @Override
-    public Object getObject() throws Exception {
-        return new ProxyFactory(getObjectType()).getProxyInstance();
+    public Object getObject() {
+        ProxyFactory proxyFactory = new ProxyFactory(getObjectType());
+        OuterServiceUtils.putOuterServiceProxy(proxyFactory);
+        Enhancer en = new Enhancer();
+        en.setSuperclass(target);
+        en.setCallback(proxyFactory);
+        return en.create();
     }
 
     @Override
