@@ -13,7 +13,7 @@ public class OuterServiceFactoryBean implements FactoryBean<Object> {
 
     @Override
     public Object getObject() throws Exception {
-        return new ProxyFactory(getObjectType());
+        return new ProxyFactory(getObjectType()).getProxyInstance();
     }
 
     @Override

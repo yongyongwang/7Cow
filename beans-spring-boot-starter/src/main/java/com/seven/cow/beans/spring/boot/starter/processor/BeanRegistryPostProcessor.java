@@ -1,5 +1,6 @@
 package com.seven.cow.beans.spring.boot.starter.processor;
 
+import com.seven.cow.beans.spring.boot.starter.annotations.OuterService;
 import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.beans.spring.boot.starter.proxy.OuterServiceFactoryBean;
@@ -111,11 +112,15 @@ public class BeanRegistryPostProcessor implements BeanDefinitionRegistryPostProc
                     BeanDefinition beanDefinitionProxy = builder.getBeanDefinition();
                     try {
                         assert className != null;
-                        beanDefinitionProxy.getConstructorArgumentValues().addGenericArgumentValue(ClassUtils.forName(className, this.classLoader));
+                        Class<?> clazz = ClassUtils.forName(className, this.classLoader);
+                        OuterService outerService = clazz.getAnnotation(OuterService.class);
+                        if (null != outerService) {
+                            beanDefinitionProxy.getConstructorArgumentValues().addGenericArgumentValue(clazz);
+                            beanDefinitionRegistry.registerBeanDefinition(beanName, beanDefinitionProxy);
+                        }
                     } catch (ClassNotFoundException e) {
                         LoggerUtils.error(e.getMessage(), e);
                     }
-                    beanDefinitionRegistry.registerBeanDefinition(beanName, beanDefinitionProxy);
                 }
             }
         }
