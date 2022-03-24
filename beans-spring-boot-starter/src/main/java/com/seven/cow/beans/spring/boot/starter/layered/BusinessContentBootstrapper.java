@@ -6,10 +6,8 @@ import com.seven.cow.beans.spring.boot.starter.properties.BeansProperties;
 import com.seven.cow.beans.spring.boot.starter.properties.TypeFiltersProperties;
 import com.seven.cow.beans.spring.boot.starter.util.OuterServiceUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.Builder;
-import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -74,7 +72,6 @@ public class BusinessContentBootstrapper implements SmartLifecycle, ApplicationC
                             .with(AnnotationConfigApplicationContext::register, BeanEmptyConfiguration.class)
                             .with(AnnotationConfigApplicationContext::registerBeanDefinition, AnnotationConfigUtils.CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME, def)
                             .build();
-                    ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
                     appContent.refresh();
                     Map<String, Object> outerServiceMap = appContent.getBeansWithAnnotation(OuterService.class);
                     if (outerServiceMap.size() > 0) {
