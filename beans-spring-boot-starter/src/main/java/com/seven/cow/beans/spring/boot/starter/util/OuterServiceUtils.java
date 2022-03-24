@@ -18,11 +18,15 @@ public abstract class OuterServiceUtils {
 
     public static void setOuterServiceProxyBean(Class<?> beanClass, Object beanInstance) {
         ProxyFactory proxyFactory = proxyFactoryHashMap.get(beanClass);
+        if (null == proxyFactory) {
+            return;
+        }
         Field field = ReflectionUtils.findField(ProxyFactory.class, "object");
         if (null != field) {
             ReflectionUtils.makeAccessible(field);
             ReflectionUtils.setField(field, proxyFactory, beanInstance);
         }
+        proxyFactoryHashMap.remove(beanClass);
     }
 
 }
