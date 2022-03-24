@@ -61,7 +61,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, parameterValue);
         }
         RequestCachingRequestWrapper cachingRequestWrapper = new RequestCachingRequestWrapper(httpServletRequest);
-        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, !loggingProperties.isAlwaysOk());
+        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysOk());
         // endregion 读取请求参数
 
         byte[] reqBytes = cachingRequestWrapper.getContentAsByteArray();
