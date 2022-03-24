@@ -2,6 +2,7 @@ package com.seven.cow.servlet.logging.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.spring.boot.autoconfigure.annotations.InheritedBean;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -21,6 +23,9 @@ import java.util.stream.Collectors;
 @Order(-2)
 @InheritedBean
 public class RequestAspect {
+
+    @Resource
+    private LoggingProperties loggingProperties;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -40,11 +45,23 @@ public class RequestAspect {
     public void requestMappingPoint() {
     }
 
+    private void info(String message) {
+        if (loggingProperties.getPrint()) {
+            LoggerUtils.info(message);
+        }
+    }
+
+    private void info(String message, Throwable ex) {
+        if (loggingProperties.getPrint()) {
+            LoggerUtils.info(message, ex);
+        }
+    }
+
     @Around("getMappingPoint() || postMappingPoint() || requestMappingPoint()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        LoggerUtils.info("------ > Rest Input: " + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs())
+        info("------ > Rest Input: " + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs())
                 .filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse
                         || o instanceof MultipartFile
                         || o instanceof MultipartFile[]))
@@ -58,7 +75,7 @@ public class RequestAspect {
                 }).collect(Collectors.joining(" | "))));
         Object result = point.proceed();
         stopWatch.stop();
-        LoggerUtils.info("< ------ Rest Output: " + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
+        info("< ------ Rest Output: " + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
         return result;
     }
 
