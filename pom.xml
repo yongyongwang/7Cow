@@ -37,7 +37,7 @@
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
         <spring.alibaba.cloud.version>2.2.6.RELEASE</spring.alibaba.cloud.version>
         <fastjson.version>1.2.78</fastjson.version>
-        <transmittable.threal.local.version>2.12.2</transmittable.threal.local.version>
+        <transmittable.threal.local.version>2.12.6</transmittable.threal.local.version>
     </properties>
 
     <dependencyManagement>
