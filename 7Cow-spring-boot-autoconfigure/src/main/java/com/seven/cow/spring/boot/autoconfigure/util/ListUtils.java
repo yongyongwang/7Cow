@@ -1,7 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.util;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,34 +26,6 @@ public final class ListUtils {
                 .limit(limit).parallel()
                 .map(a -> list.stream().skip(a * max).limit(max)
                         .parallel().collect(Collectors.toList()))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * 获取list并集
-     *
-     * @param lists 集合列表
-     * @param <T>   list 包含对象
-     * @return list
-     */
-    public static <T> List<T> unionList(List<T>... lists) {
-        return Stream.of(lists)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-
-    /**
-     * 获取list去重并集
-     *
-     * @param lists 集合列表
-     * @param <T>   list 包含对象
-     * @return 去重list
-     */
-    public static <T> List<T> unionDistinctList(List<T>... lists) {
-        return Stream.of(lists)
-                .flatMap(Collection::stream)
-                .distinct()
                 .collect(Collectors.toList());
     }
 
