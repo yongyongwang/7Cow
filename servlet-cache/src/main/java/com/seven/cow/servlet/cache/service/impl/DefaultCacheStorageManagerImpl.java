@@ -13,6 +13,10 @@ import java.util.concurrent.TimeUnit;
 public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
 
     private static final Cache<String, CacheObject> cacheObjectCache = Caffeine.newBuilder()
+            .initialCapacity(100)
+            .maximumSize(500)
+            .weakKeys()
+            .softValues()
             .expireAfter(new Expiry<String, CacheObject>() {
                 @Override
                 public long expireAfterCreate(@NonNull String key, @NonNull CacheObject value, long currentTime) {
