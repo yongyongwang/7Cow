@@ -36,7 +36,8 @@ public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
     public Object get(String key) {
         Object object = cacheManager.getIfPresent(key);
         if (object instanceof Cache) {
-            return ((Cache) object).getIfPresent(key);
+            Cache<String, Object> cache = (Cache<String, Object>) object;
+            return cache.getIfPresent(key);
         }
         return object;
     }
