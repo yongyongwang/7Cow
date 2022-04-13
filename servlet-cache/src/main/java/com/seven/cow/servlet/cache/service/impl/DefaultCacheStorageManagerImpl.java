@@ -85,6 +85,19 @@ public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
     }
 
     @Override
+    public Object getOrDefault(String key, Object defaultValue) {
+        CacheObject cacheObject = cacheObjectCache.get(key, s -> {
+            CacheObject def = new CacheObject(key);
+            def.setValue(defaultValue);
+            return def;
+        });
+        if (null != cacheObject) {
+            return cacheObject.getValue();
+        }
+        return null;
+    }
+
+    @Override
     public void remove(String key) {
         cacheObjectCache.invalidate(key);
     }

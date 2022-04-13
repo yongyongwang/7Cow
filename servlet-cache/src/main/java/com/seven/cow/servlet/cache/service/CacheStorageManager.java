@@ -10,6 +10,8 @@ public interface CacheStorageManager {
 
     Object get(String key);
 
+    Object getOrDefault(String key, Object defaultValue);
+
     void remove(String key);
 
 }
