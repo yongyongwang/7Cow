@@ -23,8 +23,8 @@ public @interface Cacheable {
 
     String unless() default "";
 
-    TimeUnit expire() default TimeUnit.HOURS;
+    TimeUnit expireUnit() default TimeUnit.HOURS;
 
-    long timeout() default 2;
+    long expireTime() default 2;
 
 }

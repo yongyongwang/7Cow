@@ -6,7 +6,7 @@ public interface CacheStorageManager {
 
     void set(String key, Object value);
 
-    void set(String key, Object value, TimeUnit timeUnit, long timeout);
+    void set(String key, Object value, TimeUnit timeUnit, long expireTime);
 
     Object get(String key);
 

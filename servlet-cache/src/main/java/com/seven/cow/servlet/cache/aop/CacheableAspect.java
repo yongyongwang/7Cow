@@ -43,7 +43,7 @@ public class CacheableAspect {
                 return cacheValue;
             } else {
                 Object result = point.proceed();
-                cacheStorageManager.set(cacheKey, result, cacheable.expire(), cacheable.timeout());
+                cacheStorageManager.set(cacheKey, result, cacheable.expireUnit(), cacheable.expireTime());
                 return result;
             }
         }

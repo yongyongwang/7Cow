@@ -45,7 +45,7 @@ public class CachePutAspect {
             if (!StringUtils.isEmpty(cachePut.key())) {
                 cacheKey += ":" + CacheUtils.calculateCacheKey(cachePut.key(), method, args, result);
             }
-            cacheStorageManager.set(cacheKey, result, cachePut.expire(), cachePut.timeout());
+            cacheStorageManager.set(cacheKey, result, cachePut.expireUnit(), cachePut.expireTime());
         }
         return result;
     }
