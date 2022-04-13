@@ -63,9 +63,7 @@ public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
 
     @Override
     public void set(String key, Object value) {
-        CacheObject cacheObject = new CacheObject(key);
-        cacheObject.setValue(value);
-        cacheObjectCache.put(key, cacheObject);
+        set(key, value, TimeUnit.HOURS, 2);
     }
 
     @Override
