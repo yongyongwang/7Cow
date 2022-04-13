@@ -3,10 +3,12 @@ package com.seven.cow.servlet.cache;
 import com.seven.cow.servlet.cache.aop.CacheEvictAspect;
 import com.seven.cow.servlet.cache.aop.CachePutAspect;
 import com.seven.cow.servlet.cache.aop.CacheableAspect;
+import com.seven.cow.servlet.cache.properties.CacheProperties;
 import com.seven.cow.servlet.cache.service.CacheStorageManager;
 import com.seven.cow.servlet.cache.service.impl.DefaultCacheStorageManagerImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * @version: 1.0
  */
 @Configuration
+@EnableConfigurationProperties(CacheProperties.class)
 public class ServletCacheAutoConfiguration {
 
     @ConditionalOnClass(name = "org.aspectj.lang.annotation.Aspect")
