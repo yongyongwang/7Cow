@@ -45,7 +45,9 @@ public class CacheEvictAspect {
             if (!StringUtils.isEmpty(cacheEvict.key())) {
                 cacheKey += ":" + CacheUtils.calculateCacheKey(cacheEvict.key(), method, args, result);
             }
-            cacheStorageManager.remove(cacheKey);
+            if (CacheUtils.calculateCacheCondition(cacheEvict.condition(), cacheEvict.unless(), method, args, result)) {
+                cacheStorageManager.remove(cacheKey);
+            }
         }
         return result;
     }
