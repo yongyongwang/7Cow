@@ -4,8 +4,7 @@ import com.seven.cow.servlet.cache.service.RedisCacheStorageManager;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -93,4 +92,146 @@ public class RedisCacheStorageManagerImpl implements RedisCacheStorageManager {
     public Object getAndSet(String key, Object value) {
         return redisTemplate.opsForValue().getAndSet(key, value);
     }
+
+    @Override
+    public void hPut(String key, Object hashKey, Object value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+
+    @Override
+    public void hPutAll(String key, Map<Object, Object> maps) {
+        redisTemplate.opsForHash().putAll(key, maps);
+    }
+
+    @Override
+    public Object hGet(String key, Object hashKey) {
+        return redisTemplate.opsForHash().get(key, hashKey);
+    }
+
+    @Override
+    public Long hDelete(String key, Object... hashKeys) {
+        return redisTemplate.opsForHash().delete(key, hashKeys);
+    }
+
+    @Override
+    public Boolean hHasKey(String key, Object hashKey) {
+        return redisTemplate.opsForHash().hasKey(key, hashKey);
+    }
+
+    @Override
+    public void lLPush(String key, Object value) {
+        redisTemplate.opsForList().leftPush(key, value);
+    }
+
+    @Override
+    public void lLPushAll(String key, Collection<Object> values) {
+        redisTemplate.opsForList().leftPushAll(key, values);
+    }
+
+    @Override
+    public void lRPush(String key, Object value) {
+        redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    @Override
+    public void lRPushAll(String key, Collection<Object> values) {
+        redisTemplate.opsForList().rightPushAll(key, values);
+    }
+
+    @Override
+    public void sAdd(String key, Object... values) {
+        redisTemplate.opsForSet().add(key, values);
+    }
+
+    @Override
+    public void sRemove(String key, Object... values) {
+        redisTemplate.opsForSet().remove(key, values);
+    }
+
+    @Override
+    public void sMove(String key, Object value, String destKey) {
+        redisTemplate.opsForSet().move(key, value, destKey);
+    }
+
+    @Override
+    public Long sSize(String key) {
+        return redisTemplate.opsForSet().size(key);
+    }
+
+    @Override
+    public Boolean sIsMember(String key, Object value) {
+        return redisTemplate.opsForSet().isMember(key, value);
+    }
+
+    @Override
+    public Set<Object> sMembers(String key) {
+        return redisTemplate.opsForSet().members(key);
+    }
+
+    @Override
+    public Boolean zAdd(String key, Object value, double score) {
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    @Override
+    public Long zRemove(String key, Object... values) {
+        return redisTemplate.opsForZSet().remove(key, values);
+    }
+
+    @Override
+    public Double zIncrementScore(String key, Object value, double delta) {
+        return redisTemplate.opsForZSet().incrementScore(key, value, delta);
+    }
+
+    @Override
+    public Long zRank(String key, Object value) {
+        return redisTemplate.opsForZSet().rank(key, value);
+    }
+
+    @Override
+    public Long zReverseRank(String key, Object value) {
+        return redisTemplate.opsForZSet().reverseRank(key, value);
+    }
+
+    @Override
+    public Set<Object> zRange(String key, long start, long end) {
+        return redisTemplate.opsForZSet().range(key, start, end);
+    }
+
+    @Override
+    public Set<Object> zRangeByScore(String key, double min, double max) {
+        return redisTemplate.opsForZSet().rangeByScore(key, min, max);
+    }
+
+    @Override
+    public Long zCount(String key, double min, double max) {
+        return redisTemplate.opsForZSet().count(key, min, max);
+    }
+
+    @Override
+    public Long zSize(String key) {
+        return redisTemplate.opsForZSet().size(key);
+    }
+
+    @Override
+    public Long zZCard(String key) {
+        return redisTemplate.opsForZSet().zCard(key);
+    }
+
+    @Override
+    public Double zScore(String key, Object value) {
+        return redisTemplate.opsForZSet().score(key, value);
+    }
+
+    @Override
+    public Long zRemoveRange(String key, long start, long end) {
+        return redisTemplate.opsForZSet().removeRange(key, start, end);
+    }
+
+    @Override
+    public Long zRemoveRangeByScore(String key, double min, double max) {
+        return redisTemplate.opsForZSet().removeRangeByScore(key, min, max);
+    }
+
+
 }

@@ -1,5 +1,8 @@
 package com.seven.cow.servlet.cache.service;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public interface RedisCacheStorageManager extends CacheStorageManager {
@@ -48,5 +51,68 @@ public interface RedisCacheStorageManager extends CacheStorageManager {
      */
     Object getAndSet(String key, Object value);
 
+    // region hash 操作
+    void hPut(String key, Object hashKey, Object value);
+
+    void hPutAll(String key, Map<Object, Object> maps);
+
+    Object hGet(String key, Object hashKey);
+
+    Long hDelete(String key, Object... hashKeys);
+
+    Boolean hHasKey(String key, Object hashKey);
+    // endregion hash 操作
+
+    // region list 操作
+    void lLPush(String key, Object value);
+
+    void lLPushAll(String key, Collection<Object> values);
+
+    void lRPush(String key, Object value);
+
+    void lRPushAll(String key, Collection<Object> values);
+    // endregion list 操作
+
+    // region set 操作
+    void sAdd(String key, Object... values);
+
+    void sRemove(String key, Object... values);
+
+    void sMove(String key, Object value, String destKey);
+
+    Long sSize(String key);
+
+    Boolean sIsMember(String key, Object value);
+
+    Set<Object> sMembers(String key);
+    // endregion set 操作
+
+    // region zSet 操作
+    Boolean zAdd(String key, Object value, double score);
+
+    Long zRemove(String key, Object... values);
+
+    Double zIncrementScore(String key, Object value, double delta);
+
+    Long zRank(String key, Object value);
+
+    Long zReverseRank(String key, Object value);
+
+    Set<Object> zRange(String key, long start, long end);
+
+    Set<Object> zRangeByScore(String key, double min, double max);
+
+    Long zCount(String key, double min, double max);
+
+    Long zSize(String key);
+
+    Long zZCard(String key);
+
+    Double zScore(String key, Object value);
+
+    Long zRemoveRange(String key, long start, long end);
+
+    Long zRemoveRangeByScore(String key, double min, double max);
+    // endregion zSet 操作
 
 }
