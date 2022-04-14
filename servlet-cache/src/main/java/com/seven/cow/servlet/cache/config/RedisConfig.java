@@ -1,11 +1,11 @@
 package com.seven.cow.servlet.cache.config;
 
+import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -16,13 +16,13 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
-        GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
+        GenericFastJsonRedisSerializer genericFastJsonRedisSerializer = new GenericFastJsonRedisSerializer();
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         template.setKeySerializer(stringRedisSerializer);
         template.setHashKeySerializer(stringRedisSerializer);
-        template.setValueSerializer(genericJackson2JsonRedisSerializer);
-        template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
-        template.setDefaultSerializer(genericJackson2JsonRedisSerializer);
+        template.setValueSerializer(genericFastJsonRedisSerializer);
+        template.setHashValueSerializer(genericFastJsonRedisSerializer);
+        template.setDefaultSerializer(genericFastJsonRedisSerializer);
         template.setEnableDefaultSerializer(true);
         template.afterPropertiesSet();
         return template;
