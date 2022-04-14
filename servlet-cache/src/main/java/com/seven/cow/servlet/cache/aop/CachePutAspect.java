@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +40,7 @@ public class CachePutAspect {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
         Object result = point.proceed();
-        CachePut cachePut = method.getAnnotation(CachePut.class);
+        CachePut cachePut = AnnotationUtils.getAnnotation(method, CachePut.class);
         if (null != cachePut) {
             String cacheKey = cachePut.cacheName();
             if (!StringUtils.isEmpty(cachePut.key())) {

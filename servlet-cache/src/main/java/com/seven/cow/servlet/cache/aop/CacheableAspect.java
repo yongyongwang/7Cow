@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
@@ -32,7 +33,7 @@ public class CacheableAspect {
         Object[] args = point.getArgs();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        Cacheable cacheable = method.getAnnotation(Cacheable.class);
+        Cacheable cacheable = AnnotationUtils.getAnnotation(method, Cacheable.class);
         if (null != cacheable) {
             String cacheKey = cacheable.cacheName();
             if (!StringUtils.isEmpty(cacheable.key())) {
