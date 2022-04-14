@@ -1,5 +1,7 @@
 package com.seven.cow.servlet.cache.service;
 
+import org.springframework.data.redis.core.*;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -130,5 +132,15 @@ public interface RedisCacheStorageManager extends CacheStorageManager {
 
     Long zRemoveRangeByScore(String key, double min, double max);
     // endregion zSet 操作
+
+    ValueOperations<Object, Object> valueOps();
+
+    HashOperations<Object, Object, Object> hashOps();
+
+    ListOperations<Object, Object> listOps();
+
+    SetOperations<Object, Object> setOps();
+
+    ZSetOperations<Object, Object> zSetOps();
 
 }

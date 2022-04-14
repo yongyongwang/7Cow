@@ -1,7 +1,7 @@
 package com.seven.cow.servlet.cache.service.impl;
 
 import com.seven.cow.servlet.cache.service.RedisCacheStorageManager;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.*;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -271,6 +271,31 @@ public class RedisCacheStorageManagerImpl implements RedisCacheStorageManager {
     @Override
     public Long zRemoveRangeByScore(String key, double min, double max) {
         return redisTemplate.opsForZSet().removeRangeByScore(key, min, max);
+    }
+
+    @Override
+    public ValueOperations<Object, Object> valueOps() {
+        return redisTemplate.opsForValue();
+    }
+
+    @Override
+    public HashOperations<Object, Object, Object> hashOps() {
+        return redisTemplate.opsForHash();
+    }
+
+    @Override
+    public ListOperations<Object, Object> listOps() {
+        return redisTemplate.opsForList();
+    }
+
+    @Override
+    public SetOperations<Object, Object> setOps() {
+        return redisTemplate.opsForSet();
+    }
+
+    @Override
+    public ZSetOperations<Object, Object> zSetOps() {
+        return redisTemplate.opsForZSet();
     }
 
 
