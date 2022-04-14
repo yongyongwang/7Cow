@@ -119,13 +119,23 @@ public class RedisCacheStorageManagerImpl implements RedisCacheStorageManager {
     }
 
     @Override
-    public Map<Object, Object> entries(String key) {
+    public Map<Object, Object> hEntries(String key) {
         return redisTemplate.opsForHash().entries(key);
+    }
+
+    @Override
+    public Long hSize(String key) {
+        return redisTemplate.opsForHash().size(key);
     }
 
     @Override
     public void lSet(String key, long index, Object value) {
         redisTemplate.opsForList().set(key, index, value);
+    }
+
+    @Override
+    public Long lRemove(String key, long count, Object value) {
+        return redisTemplate.opsForList().remove(key, count, value);
     }
 
     @Override
@@ -156,6 +166,16 @@ public class RedisCacheStorageManagerImpl implements RedisCacheStorageManager {
     @Override
     public Object lRPop(String key) {
         return redisTemplate.opsForList().rightPop(key);
+    }
+
+    @Override
+    public Long lSize(String key) {
+        return redisTemplate.opsForList().size(key);
+    }
+
+    @Override
+    public Object index(String key, long index) {
+        return redisTemplate.opsForList().index(key, index);
     }
 
     @Override
