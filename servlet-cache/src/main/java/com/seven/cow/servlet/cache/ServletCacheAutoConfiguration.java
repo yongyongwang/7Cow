@@ -6,6 +6,8 @@ import com.seven.cow.servlet.cache.aop.CacheableAspect;
 import com.seven.cow.servlet.cache.properties.CacheProperties;
 import com.seven.cow.servlet.cache.service.CacheStorageManager;
 import com.seven.cow.servlet.cache.service.impl.DefaultCacheStorageManagerImpl;
+import com.seven.cow.servlet.cache.service.impl.RedisCacheStorageManagerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,10 +45,17 @@ public class ServletCacheAutoConfiguration {
         return new CachePutAspect();
     }
 
-    @Bean
+    @Bean("cacheStorageManager")
     @ConditionalOnMissingBean
-    public CacheStorageManager cacheStorageManager() {
-        return new DefaultCacheStorageManagerImpl();
+    @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisOperations")
+    public CacheStorageManager redisCacheStorageManager() {
+        return new RedisCacheStorageManagerImpl();
+    }
+
+    @Bean("cacheStorageManager")
+    @ConditionalOnMissingBean
+    public CacheStorageManager defaultCacheStorageManager(@Autowired CacheProperties cacheProperties) {
+        return new DefaultCacheStorageManagerImpl(cacheProperties);
     }
 
 }

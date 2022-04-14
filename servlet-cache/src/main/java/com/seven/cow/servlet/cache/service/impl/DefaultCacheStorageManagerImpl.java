@@ -9,17 +9,13 @@ import com.seven.cow.servlet.cache.service.CacheStorageManager;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
 
-    @Resource
-    private CacheProperties cacheProperties;
-
     private static Cache<String, CacheObject> cacheObjectCache = null;
 
-    public DefaultCacheStorageManagerImpl() {
+    public DefaultCacheStorageManagerImpl(CacheProperties cacheProperties) {
         cacheObjectCache = Caffeine.newBuilder()
                 .initialCapacity(cacheProperties.getInitialCapacity())
                 .maximumSize(cacheProperties.getMaximumSize())
