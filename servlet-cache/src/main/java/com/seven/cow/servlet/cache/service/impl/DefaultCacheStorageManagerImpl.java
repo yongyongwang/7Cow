@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Expiry;
 import com.seven.cow.servlet.cache.entity.CacheObject;
 import com.seven.cow.servlet.cache.properties.CacheProperties;
 import com.seven.cow.servlet.cache.service.CacheStorageManager;
+import com.seven.cow.servlet.cache.util.CacheUtils;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -26,36 +27,14 @@ public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
                     public long expireAfterCreate(@NonNull String key, @NonNull CacheObject value, long currentTime) {
                         TimeUnit timeUnit = value.getExpireUnit();
                         long expireTime = value.getExpireTime();
-                        switch (timeUnit) {
-                            case DAYS:
-                                expireTime = expireTime * 24 * 3600 * 1000000000;
-                                break;
-                            case HOURS:
-                                expireTime = expireTime * 3600 * 1000000000;
-                                break;
-                            case MINUTES:
-                                expireTime = expireTime * 60 * 1000000000;
-                                break;
-                            case SECONDS:
-                                expireTime = expireTime * 1000000000;
-                                break;
-                            // 毫秒
-                            case MILLISECONDS:
-                                expireTime = expireTime * 1000000;
-                                break;
-                            // 微妙
-                            case MICROSECONDS:
-                                expireTime = expireTime * 1000;
-                                break;
-                            default:
-                                break;
-                        }
-                        return expireTime;
+                        return CacheUtils.calculateCacheExpireTime(timeUnit, expireTime);
                     }
 
                     @Override
                     public long expireAfterUpdate(@NonNull String key, @NonNull CacheObject value, long currentTime, @NonNegative long currentDuration) {
-                        return currentDuration;
+                        TimeUnit timeUnit = value.getExpireUnit();
+                        long expireTime = value.getExpireTime();
+                        return CacheUtils.calculateCacheExpireTime(timeUnit, expireTime);
                     }
 
                     @Override
@@ -105,5 +84,15 @@ public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
     @Override
     public void remove(String key) {
         cacheObjectCache.invalidate(key);
+    }
+
+    @Override
+    public void expire(String key, TimeUnit timeUnit, long expireTime) {
+        CacheObject cacheObject = cacheObjectCache.getIfPresent(key);
+        if (null != cacheObject) {
+            cacheObject.setExpireTime(expireTime);
+            cacheObject.setExpireUnit(timeUnit);
+            cacheObjectCache.put(key, cacheObject);
+        }
     }
 }

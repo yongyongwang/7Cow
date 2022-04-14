@@ -46,4 +46,9 @@ public class RedisCacheStorageManagerImpl implements CacheStorageManager {
     public void remove(String key) {
         redisTemplate.delete(key);
     }
+
+    @Override
+    public void expire(String key, TimeUnit timeUnit, long expireTime) {
+        redisTemplate.expire(key, expireTime, timeUnit);
+    }
 }

@@ -14,4 +14,6 @@ public interface CacheStorageManager {
 
     void remove(String key);
 
+    void expire(String key, TimeUnit timeUnit, long expireTime);
+
 }

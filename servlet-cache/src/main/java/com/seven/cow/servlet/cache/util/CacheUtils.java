@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @description: TODO
@@ -36,6 +37,35 @@ public abstract class CacheUtils {
         return (StringUtils.isEmpty(condition) && StringUtils.isEmpty(unless))
                 || ((!StringUtils.isEmpty(condition) && CacheUtils.calculateCacheCondition(condition, method, args, result)))
                 || (!StringUtils.isEmpty(unless) && !CacheUtils.calculateCacheCondition(unless, method, args, result));
+    }
+
+    public static long calculateCacheExpireTime(final TimeUnit timeUnit, final long expireTime) {
+        long cacheExpireTime = expireTime;
+        switch (timeUnit) {
+            case DAYS:
+                cacheExpireTime = cacheExpireTime * 24 * 3600 * 1000000000;
+                break;
+            case HOURS:
+                cacheExpireTime = cacheExpireTime * 3600 * 1000000000;
+                break;
+            case MINUTES:
+                cacheExpireTime = cacheExpireTime * 60 * 1000000000;
+                break;
+            case SECONDS:
+                cacheExpireTime = cacheExpireTime * 1000000000;
+                break;
+            // 毫秒
+            case MILLISECONDS:
+                cacheExpireTime = cacheExpireTime * 1000000;
+                break;
+            // 微妙
+            case MICROSECONDS:
+                cacheExpireTime = cacheExpireTime * 1000;
+                break;
+            default:
+                break;
+        }
+        return cacheExpireTime;
     }
 
     private static EvaluationContext bindParam(Method method, Object[] args, Object result) {
