@@ -88,4 +88,9 @@ public class RedisCacheStorageManagerImpl implements RedisCacheStorageManager {
     public void rename(String oldKey, String newKey) {
         redisTemplate.rename(oldKey, newKey);
     }
+
+    @Override
+    public Object getAndSet(String key, Object value) {
+        return redisTemplate.opsForValue().getAndSet(key, value);
+    }
 }
