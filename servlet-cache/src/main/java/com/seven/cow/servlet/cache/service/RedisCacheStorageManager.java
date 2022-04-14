@@ -61,16 +61,25 @@ public interface RedisCacheStorageManager extends CacheStorageManager {
     Long hDelete(String key, Object... hashKeys);
 
     Boolean hHasKey(String key, Object hashKey);
+
+    Map<Object, Object> entries(String key);
     // endregion hash 操作
 
     // region list 操作
+
+    void lSet(String key, long index, Object value);
+
     void lLPush(String key, Object value);
 
     void lLPushAll(String key, Collection<Object> values);
 
+    Object lLPop(String key);
+
     void lRPush(String key, Object value);
 
     void lRPushAll(String key, Collection<Object> values);
+
+    Object lRPop(String key);
     // endregion list 操作
 
     // region set 操作
