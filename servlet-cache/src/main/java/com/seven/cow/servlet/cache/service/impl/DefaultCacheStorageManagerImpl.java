@@ -10,7 +10,9 @@ import com.seven.cow.servlet.cache.util.CacheUtils;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
 
@@ -94,5 +96,24 @@ public class DefaultCacheStorageManagerImpl implements CacheStorageManager {
             cacheObject.setExpireUnit(timeUnit);
             cacheObjectCache.put(key, cacheObject);
         }
+    }
+
+    @Override
+    public void expireAt(String key, Date date) {
+        long dateTime = date.getTime();
+        long nowTime = System.currentTimeMillis();
+        if (dateTime > nowTime) {
+            expire(key, TimeUnit.MILLISECONDS, (dateTime - nowTime));
+        }
+    }
+
+    @Override
+    public void remove(String... keys) {
+        Stream.of(keys).forEach(this::remove);
+    }
+
+    @Override
+    public Boolean hasKey(String key) {
+        return cacheObjectCache.asMap().containsKey(key);
     }
 }

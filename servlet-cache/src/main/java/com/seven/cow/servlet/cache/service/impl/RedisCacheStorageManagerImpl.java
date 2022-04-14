@@ -1,9 +1,11 @@
 package com.seven.cow.servlet.cache.service.impl;
 
-import com.seven.cow.servlet.cache.service.CacheStorageManager;
+import com.seven.cow.servlet.cache.service.RedisCacheStorageManager;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @date: 2022/4/14 8:42
  * @version: 1.0
  */
-public class RedisCacheStorageManagerImpl implements CacheStorageManager {
+public class RedisCacheStorageManagerImpl implements RedisCacheStorageManager {
 
     @Resource
     private RedisTemplate<Object, Object> redisTemplate;
@@ -50,5 +52,40 @@ public class RedisCacheStorageManagerImpl implements CacheStorageManager {
     @Override
     public void expire(String key, TimeUnit timeUnit, long expireTime) {
         redisTemplate.expire(key, expireTime, timeUnit);
+    }
+
+    @Override
+    public void expireAt(String key, Date date) {
+        redisTemplate.expireAt(key, date);
+    }
+
+    @Override
+    public void remove(String... keys) {
+        redisTemplate.delete(Arrays.asList(keys));
+    }
+
+    @Override
+    public Boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
+    @Override
+    public Boolean move(String key, int dbIndex) {
+        return redisTemplate.move(key, dbIndex);
+    }
+
+    @Override
+    public Boolean persist(String key) {
+        return redisTemplate.persist(key);
+    }
+
+    @Override
+    public Long getExpire(String key, TimeUnit timeUnit) {
+        return redisTemplate.getExpire(key, timeUnit);
+    }
+
+    @Override
+    public void rename(String oldKey, String newKey) {
+        redisTemplate.rename(oldKey, newKey);
     }
 }

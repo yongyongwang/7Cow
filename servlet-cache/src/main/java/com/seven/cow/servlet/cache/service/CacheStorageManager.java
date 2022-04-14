@@ -1,5 +1,6 @@
 package com.seven.cow.servlet.cache.service;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public interface CacheStorageManager {
@@ -15,5 +16,11 @@ public interface CacheStorageManager {
     void remove(String key);
 
     void expire(String key, TimeUnit timeUnit, long expireTime);
+
+    void expireAt(String key, Date date);
+
+    void remove(String... keys);
+
+    Boolean hasKey(String key);
 
 }
