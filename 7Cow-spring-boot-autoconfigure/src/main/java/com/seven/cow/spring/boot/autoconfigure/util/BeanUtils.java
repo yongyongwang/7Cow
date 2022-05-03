@@ -37,7 +37,7 @@ public final class BeanUtils {
     public static <S> Map<String, Object> convertToMap(S source) {
         BeanMap beanMap = BeanMap.create(source);
         Map<String, Object> objectMap = new HashMap<>(beanMap.size());
-        for (Object key : beanMap.entrySet()) {
+        for (Object key : beanMap.keySet()) {
             objectMap.put(key.toString(), beanMap.get(key));
         }
         return objectMap;
