@@ -1,5 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
+import java.beans.Transient;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,6 +93,7 @@ public class ResponsePagingData<T> {
         return responseData;
     }
 
+    @Transient
     public Boolean isOk() {
         return "ok".equalsIgnoreCase(this.state);
     }

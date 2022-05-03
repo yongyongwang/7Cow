@@ -1,5 +1,7 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
+import java.beans.Transient;
+
 public class ResponseData<T> {
 
     private String state;
@@ -77,6 +79,7 @@ public class ResponseData<T> {
         return responseData;
     }
 
+    @Transient
     public Boolean isOk() {
         return "ok".equalsIgnoreCase(this.state);
     }
