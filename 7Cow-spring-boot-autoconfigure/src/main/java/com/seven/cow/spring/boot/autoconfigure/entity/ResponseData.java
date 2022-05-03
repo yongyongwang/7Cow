@@ -68,4 +68,16 @@ public class ResponseData<T> {
         responseData.setState("fail");
         return responseData;
     }
+
+    public static <T> ResponseData<T> fail(String errorCode, String errorMsg) {
+        ResponseData<T> responseData = new ResponseData<>();
+        responseData.setState("fail");
+        responseData.setErrorCode(errorCode);
+        responseData.setErrorMsg(errorMsg);
+        return responseData;
+    }
+
+    public Boolean isOk() {
+        return "ok".equalsIgnoreCase(this.state);
+    }
 }
