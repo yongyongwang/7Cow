@@ -43,6 +43,7 @@ public final class BeanUtils {
         return objectMap;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T convertToBean(Map<String, Object> map, Class<T> targetClass) {
         T bean = newInstance(targetClass);
         BeanMap beanMap = BeanMap.create(bean);
@@ -50,6 +51,7 @@ public final class BeanUtils {
         return bean;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<T> targetClass) {
         try {
             return targetClass.newInstance();
