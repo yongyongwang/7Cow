@@ -1,12 +1,14 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
+import java.beans.Transient;
+
 public class RequestPagingData extends RequestData {
 
     private int pageNum;
 
     private int pageSize;
 
-    private int total;
+    private transient int total;
 
     public int getPageNum() {
         return pageNum;
@@ -32,7 +34,8 @@ public class RequestPagingData extends RequestData {
         this.total = total;
     }
 
-    public int getOffset() {
+    @Transient
+    public int offset() {
         if (this.pageNum <= 0) {
             this.pageNum = 1;
         }
