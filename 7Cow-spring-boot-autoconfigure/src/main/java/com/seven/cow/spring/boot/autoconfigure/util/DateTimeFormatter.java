@@ -4,7 +4,7 @@ package com.seven.cow.spring.boot.autoconfigure.util;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class DateTimeFormatter {
+public final class DateTimeFormatter {
 
     public static final String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
