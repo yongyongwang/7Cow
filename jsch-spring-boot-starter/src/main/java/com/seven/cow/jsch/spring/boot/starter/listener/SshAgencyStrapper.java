@@ -29,7 +29,7 @@ public class SshAgencyStrapper implements SmartLifecycle {
     @Override
     public void start() {
         if (initialized.compareAndSet(false, true)) {
-            LoggerUtils.info("ssh 2 agent init!");
+            LoggerUtils.info("ssh2 agent init!");
 
             List<SshProxyProperties> sshPropertiesList = sshProperties.getProxy();
             if (!CollectionUtils.isEmpty(sshPropertiesList)) {
