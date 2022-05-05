@@ -1,7 +1,5 @@
 package com.seven.cow.spring.boot.autoconfigure.util;
 
-import sun.misc.BASE64Decoder;
-
 import javax.crypto.Cipher;
 import java.io.IOException;
 import java.security.*;
@@ -100,7 +98,7 @@ public final class RsaUtils {
      */
     public static RSAPublicKey getPublicKey(String pubKeyBase64) throws Exception {
         // 把 公钥的Base64文本 转换为已编码的 公钥bytes
-        byte[] encPubKey = new BASE64Decoder().decodeBuffer(pubKeyBase64);
+        byte[] encPubKey = base64ToBytes(pubKeyBase64);
 
         // 创建 已编码的公钥规格
         X509EncodedKeySpec encPubKeySpec = new X509EncodedKeySpec(encPubKey);
@@ -114,7 +112,7 @@ public final class RsaUtils {
      */
     public static PrivateKey getPrivateKey(String priKeyBase64) throws Exception {
         // 把 私钥的Base64文本 转换为已编码的 私钥bytes
-        byte[] encPriKey = new BASE64Decoder().decodeBuffer(priKeyBase64);
+        byte[] encPriKey = base64ToBytes(priKeyBase64);
 
         // 创建 已编码的私钥规格
         PKCS8EncodedKeySpec encPriKeySpec = new PKCS8EncodedKeySpec(encPriKey);
