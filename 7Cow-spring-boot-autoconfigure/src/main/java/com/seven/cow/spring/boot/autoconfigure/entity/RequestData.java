@@ -4,6 +4,8 @@ public class RequestData extends BasicRequest {
 
     private String crtUid;
     private String uptUid;
+    private Long crtId;
+    private Long uptId;
     private String creator;
     private String updater;
     private Long crtTime = System.currentTimeMillis();
@@ -23,6 +25,22 @@ public class RequestData extends BasicRequest {
 
     public void setUptUid(String uptUid) {
         this.uptUid = uptUid;
+    }
+
+    public Long getCrtId() {
+        return crtId;
+    }
+
+    public void setCrtId(Long crtId) {
+        this.crtId = crtId;
+    }
+
+    public Long getUptId() {
+        return uptId;
+    }
+
+    public void setUptId(Long uptId) {
+        this.uptId = uptId;
     }
 
     public String getCreator() {
