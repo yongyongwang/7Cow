@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class DateTimeFormatter {
 
     public static final String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String UTC_MS_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String UTC_MS_WITH_ZONE_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     public static final String DATETIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
