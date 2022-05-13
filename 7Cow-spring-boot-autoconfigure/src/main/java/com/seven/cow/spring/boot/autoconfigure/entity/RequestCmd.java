@@ -5,7 +5,7 @@ import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RequestData extends BasicRequest {
+public class RequestCmd extends BasicRequest {
 
     private String crtUid;
     private String uptUid;

@@ -2,7 +2,7 @@ package com.seven.cow.spring.boot.autoconfigure.entity;
 
 import java.beans.Transient;
 
-public class RequestPagingData extends RequestData {
+public class RequestPagingCmd extends RequestCmd {
 
     private int pageNum;
 
