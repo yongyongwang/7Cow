@@ -30,6 +30,16 @@ public class ResponseCmd<T> {
         return data;
     }
 
+    public ResponseCmd<T> toOk() {
+        this.state = Conts.REQUEST_OK;
+        return this;
+    }
+
+    public ResponseCmd<T> toFail() {
+        this.state = Conts.REQUEST_FAIL;
+        return this;
+    }
+
     public ResponseCmd<T> data(T data) {
         this.data = data;
         return this;
