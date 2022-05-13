@@ -1,5 +1,10 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
+import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class RequestData extends BasicRequest {
 
     private String crtUid;
@@ -10,6 +15,8 @@ public class RequestData extends BasicRequest {
     private String updater;
     private Long crtTime = System.currentTimeMillis();
     private Long uptTime = System.currentTimeMillis();
+    private List<String> asc;
+    private List<String> desc;
 
     public String getCrtUid() {
         return crtUid;
@@ -73,5 +80,43 @@ public class RequestData extends BasicRequest {
 
     public void setUptTime(Long uptTime) {
         this.uptTime = uptTime;
+    }
+
+    public String getAsc() {
+        if (null != asc && !asc.isEmpty()) {
+            return asc.stream().distinct().map(value -> value + " asc").collect(Collectors.joining(Conts.SPLIT_COMMA));
+        }
+        return Conts.STRING_EMPTY;
+    }
+
+    public void setAsc(List<String> asc) {
+        if (null != asc && !asc.isEmpty()) {
+            asc = asc.stream()
+                    .filter(value -> null != value && !value.equals(""))
+                    .map(value -> {
+                        value = value.replace("asc", "").trim();
+                        return value;
+                    }).collect(Collectors.toList());
+        }
+        this.asc = asc;
+    }
+
+    public String getDesc() {
+        if (null != desc && !desc.isEmpty()) {
+            return desc.stream().distinct().map(value -> value + " desc").collect(Collectors.joining(Conts.SPLIT_COMMA));
+        }
+        return Conts.STRING_EMPTY;
+    }
+
+    public void setDesc(List<String> desc) {
+        if (null != desc && !desc.isEmpty()) {
+            desc = desc.stream()
+                    .filter(value -> null != value && !value.equals(""))
+                    .map(value -> {
+                        value = value.replace("desc", "").trim();
+                        return value;
+                    }).collect(Collectors.toList());
+        }
+        this.desc = desc;
     }
 }
