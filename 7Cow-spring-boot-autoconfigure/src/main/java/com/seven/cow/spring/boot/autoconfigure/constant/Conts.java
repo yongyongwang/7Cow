@@ -13,6 +13,9 @@ public final class Conts {
     public final static String SPLIT_SEMICOLON = ";";
     public final static String STRING_EMPTY = "";
 
+    public final static String REQUEST_OK = "ok";
+    public final static String REQUEST_FAIL = "fail";
+
     public final static String X_CURRENT_HEADERS = "x-request" + SPLIT_COLON + "headers";
 
     public final static String X_CURRENT_REQUEST_BODY = "x-request" + SPLIT_COLON + "payload";

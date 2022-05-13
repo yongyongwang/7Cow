@@ -1,5 +1,7 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
+import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
+
 import java.beans.Transient;
 
 public class ResponseData<T> {
@@ -16,32 +18,21 @@ public class ResponseData<T> {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public String getErrorCode() {
         return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
     }
 
     public String getErrorMsg() {
         return errorMsg;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
-
     public T getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public ResponseData<T> data(T data) {
         this.data = data;
+        return this;
     }
 
     public ResponseData<T> errorCode(String errorCode) {
@@ -54,9 +45,14 @@ public class ResponseData<T> {
         return this;
     }
 
+    public ResponseData<T> state(String state) {
+        this.state = state;
+        return this;
+    }
+
     public static <T> ResponseData<T> ok(T data) {
         ResponseData<T> responseData = new ResponseData<>();
-        responseData.setState("ok");
+        responseData.setState(Conts.REQUEST_OK);
         responseData.setData(data);
         return responseData;
     }
@@ -67,13 +63,13 @@ public class ResponseData<T> {
 
     public static <T> ResponseData<T> fail() {
         ResponseData<T> responseData = new ResponseData<>();
-        responseData.setState("fail");
+        responseData.setState(Conts.REQUEST_FAIL);
         return responseData;
     }
 
     public static <T> ResponseData<T> fail(String errorCode, String errorMsg) {
         ResponseData<T> responseData = new ResponseData<>();
-        responseData.setState("fail");
+        responseData.setState(Conts.REQUEST_FAIL);
         responseData.setErrorCode(errorCode);
         responseData.setErrorMsg(errorMsg);
         return responseData;
@@ -81,6 +77,6 @@ public class ResponseData<T> {
 
     @Transient
     public Boolean isOk() {
-        return "ok".equalsIgnoreCase(this.state);
+        return Conts.REQUEST_OK.equalsIgnoreCase(this.state);
     }
 }
