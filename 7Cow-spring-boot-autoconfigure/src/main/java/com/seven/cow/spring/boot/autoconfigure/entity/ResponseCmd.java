@@ -8,9 +8,9 @@ public class ResponseCmd<T> {
 
     private String state;
 
-    private String errorCode;
+    private String code;
 
-    private String errorMsg;
+    private String message;
 
     private T data;
 
@@ -18,12 +18,12 @@ public class ResponseCmd<T> {
         return state;
     }
 
-    public String getErrorCode() {
-        return errorCode;
+    public String getCode() {
+        return code;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public String getMessage() {
+        return message;
     }
 
     public T getData() {
@@ -36,12 +36,12 @@ public class ResponseCmd<T> {
     }
 
     public ResponseCmd<T> errorCode(String errorCode) {
-        this.errorCode = errorCode;
+        this.code = errorCode;
         return this;
     }
 
     public ResponseCmd<T> errorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+        this.message = errorMsg;
         return this;
     }
 
