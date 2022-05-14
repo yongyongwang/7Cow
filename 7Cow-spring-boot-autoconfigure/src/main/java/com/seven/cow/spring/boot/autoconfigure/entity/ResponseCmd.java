@@ -62,8 +62,14 @@ public class ResponseCmd<T> {
         return new ResponseCmd<T>().state(Conts.REQUEST_FAIL);
     }
 
-    public static <T> ResponseCmd<T> fail(String errorCode, String errorMsg) {
+    private static <T> ResponseCmd<T> fail(String errorCode, String errorMsg) {
         return new ResponseCmd<T>().state(Conts.REQUEST_FAIL).errorCode(errorCode).errorMsg(errorMsg);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static <T> ResponseCmd<T> fail(BaseError baseError) {
+        Error error = baseError.get();
+        return fail(error.getErrorCode(), error.getErrorMsg());
     }
 
     @Transient
