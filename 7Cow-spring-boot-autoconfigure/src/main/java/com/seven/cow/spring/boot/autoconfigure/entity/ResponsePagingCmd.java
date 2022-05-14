@@ -2,6 +2,7 @@ package com.seven.cow.spring.boot.autoconfigure.entity;
 
 import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ResponsePagingCmd<T> extends ResponseCmd<List<T>> {
@@ -15,6 +16,11 @@ public class ResponsePagingCmd<T> extends ResponseCmd<List<T>> {
     public ResponsePagingCmd<T> total(int total) {
         this.total = total;
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> ResponseCmd<T> ok() {
+        return (ResponseCmd<T>) new ResponsePagingCmd<T>().total(0).data(Collections.emptyList()).state(Conts.REQUEST_OK);
     }
 
     public static <T> ResponsePagingCmd<T> ok(List<T> data, int total) {
