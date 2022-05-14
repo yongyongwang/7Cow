@@ -20,7 +20,7 @@ public class ResponsePagingCmd<T> extends ResponseCmd<List<T>> {
 
     @SuppressWarnings("unchecked")
     public static <T> ResponseCmd<T> ok() {
-        return (ResponseCmd<T>) new ResponsePagingCmd<T>().total(0).data(Collections.emptyList()).state(Conts.REQUEST_OK);
+        return ok(Collections.EMPTY_LIST, 0);
     }
 
     public static <T> ResponsePagingCmd<T> ok(List<T> data, int total) {
