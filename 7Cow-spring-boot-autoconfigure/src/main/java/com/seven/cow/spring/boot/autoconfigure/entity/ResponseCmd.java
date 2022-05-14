@@ -59,7 +59,7 @@ public class ResponseCmd<T> {
     }
 
     public static <T> ResponseCmd<T> fail() {
-        return new ResponseCmd<T>().state(Conts.REQUEST_FAIL);
+        return fail(Errors.FAIL);
     }
 
     private static <T> ResponseCmd<T> fail(String errorCode, String errorMsg) {
