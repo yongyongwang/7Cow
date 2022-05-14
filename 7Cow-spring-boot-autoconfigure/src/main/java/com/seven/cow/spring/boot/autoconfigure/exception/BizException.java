@@ -22,6 +22,21 @@ public class BizException extends RuntimeException implements Error {
         };
     }
 
+    public BizException(String message, Throwable cause) {
+        super(message, cause);
+        this.error = new Error() {
+            @Override
+            public String getErrorCode() {
+                return null;
+            }
+
+            @Override
+            public String getErrorMsg() {
+                return message;
+            }
+        };
+    }
+
     @SuppressWarnings("rawtypes")
     public BizException(BaseError baseError) {
         super(baseError.get().getErrorMsg());

@@ -1,7 +1,7 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
 public enum Errors implements BaseError<Errors>, Error {
-    ;
+    OK("00000", "ok");
 
     Errors(String errorCode, String errorMsg) {
         this.errorCode = errorCode;
