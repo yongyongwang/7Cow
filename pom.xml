@@ -7,20 +7,6 @@
     <groupId>com.github.yongyongwang</groupId>
     <artifactId>7Cow</artifactId>
     <version>0.1.4</version>
-    <modules>
-        <module>7Cow-spring-boot-starter</module>
-        <module>7Cow-spring-boot-autoconfigure</module>
-        <module>servlet-logging</module>
-        <module>servlet-upload</module>
-        <module>servlet-download</module>
-        <module>servlet-cors</module>
-        <module>beans-spring-boot-starter</module>
-        <module>event-spring-boot-starter</module>
-        <module>jsch-spring-boot-starter</module>
-        <module>data-authorization</module>
-        <module>servlet-validator</module>
-        <module>servlet-cache</module>
-    </modules>
     <packaging>pom</packaging>
     <name>7Cow:${project.version}</name>
     <url>https://github.com/yongyongwang/7Cow.git</url>
