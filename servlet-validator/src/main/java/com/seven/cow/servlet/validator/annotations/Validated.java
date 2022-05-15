@@ -6,7 +6,11 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 public @interface Validated {
+
     String expression();
 
     String message();
+
+    String code() default "";
+
 }

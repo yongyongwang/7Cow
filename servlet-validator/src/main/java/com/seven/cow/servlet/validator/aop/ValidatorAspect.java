@@ -5,6 +5,8 @@ import com.seven.cow.servlet.validator.annotations.Validators;
 import com.seven.cow.servlet.validator.exception.ValidationException;
 import com.seven.cow.servlet.validator.util.ValidatorUtils;
 import com.seven.cow.spring.boot.autoconfigure.annotations.InheritedBean;
+import com.seven.cow.spring.boot.autoconfigure.entity.BaseError;
+import com.seven.cow.spring.boot.autoconfigure.entity.Error;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,7 +37,17 @@ public class ValidatorAspect {
                 try {
                     Boolean flag = ValidatorUtils.valid(validated.expression(), method, args, Boolean.class);
                     if (Boolean.FALSE.equals(flag)) {
-                        throw new ValidationException(validated.message());
+                        throw new ValidationException(() -> new Error() {
+                            @Override
+                            public String getErrorCode() {
+                                return validated.code();
+                            }
+
+                            @Override
+                            public String getErrorMsg() {
+                                return validated.message();
+                            }
+                        });
                     }
                 } catch (Exception ex) {
                     if (ex instanceof ValidationException) {
