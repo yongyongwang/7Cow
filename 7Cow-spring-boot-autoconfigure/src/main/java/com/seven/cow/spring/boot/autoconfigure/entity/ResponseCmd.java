@@ -35,13 +35,13 @@ public class ResponseCmd<T> {
         return this;
     }
 
-    public ResponseCmd<T> errorCode(String errorCode) {
-        this.code = errorCode;
+    public ResponseCmd<T> code(String code) {
+        this.code = code;
         return this;
     }
 
-    public ResponseCmd<T> errorMsg(String errorMsg) {
-        this.message = errorMsg;
+    public ResponseCmd<T> message(String message) {
+        this.message = message;
         return this;
     }
 
@@ -51,7 +51,7 @@ public class ResponseCmd<T> {
     }
 
     public static <T> ResponseCmd<T> ok(T data) {
-        return new ResponseCmd<T>().state(Conts.REQUEST_OK).data(data);
+        return new ResponseCmd<T>().code(Errors.SUCCESS.getErrorCode()).message(Errors.SUCCESS.getErrorMsg()).state(Conts.REQUEST_OK).data(data);
     }
 
     public static <T> ResponseCmd<T> ok() {
@@ -62,8 +62,8 @@ public class ResponseCmd<T> {
         return fail(Errors.FAIL);
     }
 
-    private static <T> ResponseCmd<T> fail(String errorCode, String errorMsg) {
-        return new ResponseCmd<T>().state(Conts.REQUEST_FAIL).errorCode(errorCode).errorMsg(errorMsg);
+    private static <T> ResponseCmd<T> fail(String code, String message) {
+        return new ResponseCmd<T>().state(Conts.REQUEST_FAIL).code(code).message(message);
     }
 
     @SuppressWarnings("rawtypes")
