@@ -59,6 +59,7 @@ public final class Builder<T> {
         return value;
     }
 
+    @SuppressWarnings("unchecked")
     public T newBuild() {
         T value = null != instantiator ? instantiator.get() : instance;
         T newValue;
