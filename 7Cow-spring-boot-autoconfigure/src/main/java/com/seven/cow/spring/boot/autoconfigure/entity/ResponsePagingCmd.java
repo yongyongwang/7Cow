@@ -24,7 +24,7 @@ public class ResponsePagingCmd<T> extends ResponseCmd<List<T>> {
     }
 
     public static <T> ResponsePagingCmd<T> ok(List<T> data, int total) {
-        return (ResponsePagingCmd<T>) new ResponsePagingCmd<T>().total(total).data(data).state(Conts.REQUEST_OK);
+        return (ResponsePagingCmd<T>) new ResponsePagingCmd<T>().total(total).data(data).code(Errors.SUCCESS.getErrorCode()).message(Errors.SUCCESS.getErrorMsg()).state(Conts.REQUEST_OK);
     }
 
 }
