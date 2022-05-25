@@ -14,10 +14,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.yongyongwang</groupId>
             <artifactId>7Cow-spring-boot-starter</artifactId>
         </dependency>
