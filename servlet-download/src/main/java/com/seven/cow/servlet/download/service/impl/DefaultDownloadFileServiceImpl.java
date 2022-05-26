@@ -3,9 +3,9 @@ package com.seven.cow.servlet.download.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.download.service.DownloadFileService;
+import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.util.StreamUtils;
-import org.springframework.util.unit.DataSize;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +27,7 @@ public class DefaultDownloadFileServiceImpl implements DownloadFileService {
         if (file.isFile() && file.exists()) {
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 byte[] bytes = StreamUtils.copyToByteArray(inputStream);
-                LoggerUtils.info("Download A File Successful,FileKey:" + fileKey + ",Size:" + DataSize.ofBytes(bytes.length).toString() + " !");
+                LoggerUtils.info("Download A File Successful,FileKey:" + fileKey + ",Size:" + DataSizeUtil.format(bytes.length) + " !");
                 return bytes;
             } catch (Exception ex) {
                 LoggerUtils.error("Download A File Failure,FileKey:" + fileKey + "!", ex);
