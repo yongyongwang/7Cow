@@ -3,6 +3,7 @@ package com.seven.cow.servlet.logging.filters;
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.servlet.logging.service.ResponseFilterService;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
+import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import com.seven.cow.spring.boot.autoconfigure.util.VUtils;
 import org.springframework.core.Ordered;
@@ -68,7 +69,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
         CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
         VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> info("------ > Request Parameters: " + String.join("&", parameters)));
         String payload = new String(reqBytes, cachingRequestWrapper.getCharacterEncoding());
-        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> info("------ > Request Payload: " + payload));
+        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> info("------ > Request Payload(" + DataSizeUtil.format(reqBytes.length) + "): " + payload));
         try {
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } catch (Throwable ex) {
@@ -83,7 +84,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            info("< ------ Response(" + (loggingProperties.isAlwaysOk() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data: " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
+            info("< ------ Response(" + (loggingProperties.isAlwaysOk() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
             info("< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }

@@ -3,6 +3,7 @@ package com.seven.cow.servlet.upload.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.upload.service.UploadFileService;
+import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.util.FileCopyUtils;
 
@@ -21,26 +22,25 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
     @Override
     public FileInfo upload(byte[] content, String storeAddress) {
         DefaultFileInfo fileInfo = new DefaultFileInfo(content.length);
-        String saveDirectory = storeAddress;
         // Save the dir
-        File dir = new File(saveDirectory);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File dir = new File(storeAddress);
+        if (!dir.exists() && dir.mkdirs()) {
+            LoggerUtils.info("Create a directory:" + storeAddress);
         }
         // Check saveDirectory is truly a directory
         if (!dir.isDirectory())
-            throw new IllegalArgumentException("Not a directory: " + saveDirectory);
+            throw new IllegalArgumentException("Not a directory: " + storeAddress);
 
         // Check saveDirectory is writable
         if (!dir.canWrite())
-            throw new IllegalArgumentException("Not writable: " + saveDirectory);
+            throw new IllegalArgumentException("Not writable: " + storeAddress);
         String fileKey = fileInfo.key();
-        try (FileOutputStream outputStream = new FileOutputStream(saveDirectory + "/" + fileInfo.key())) {
+        try (FileOutputStream outputStream = new FileOutputStream(storeAddress + "/" + fileInfo.key())) {
             FileCopyUtils.copy(content, outputStream);
+            LoggerUtils.info("Upload a file successful,FileKey:" + fileKey + ",Size:" + fileInfo.humanReadableSize() + " !");
         } catch (IOException e) {
-            LoggerUtils.info("Upload A File Failure,FileKey:" + fileKey + ",Size:" + fileInfo.humanReadableSize() + " !", e);
+            LoggerUtils.error("Upload a file failure,FileKey:" + fileKey + ",Size:" + fileInfo.humanReadableSize() + " !", e);
         }
-        LoggerUtils.info("Upload A File Successful,FileKey:" + fileKey + ",Size:" + fileInfo.humanReadableSize() + " !");
         return fileInfo;
     }
 
@@ -56,19 +56,11 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
         return new byte[0];
     }
 
-    static String humanReadable(int bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
-
     static class DefaultFileInfo extends FileInfo {
 
-        private int size;
+        private final int size;
 
-        private String key;
+        private final String key;
 
         public DefaultFileInfo(int size) {
             this.size = size;
@@ -81,7 +73,7 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
         }
 
         public String humanReadableSize() {
-            return humanReadable(size, true);
+            return DataSizeUtil.format(size);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.seven.cow.servlet.download.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.download.service.DownloadFileService;
+import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.util.StreamUtils;
 
@@ -26,7 +27,7 @@ public class DefaultDownloadFileServiceImpl implements DownloadFileService {
         if (file.isFile() && file.exists()) {
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 byte[] bytes = StreamUtils.copyToByteArray(inputStream);
-                LoggerUtils.info("Download A File Successful,FileKey:" + fileKey + ",Size:" + humanReadable(bytes.length, true) + " !");
+                LoggerUtils.info("Download A File Successful,FileKey:" + fileKey + ",Size:" + DataSizeUtil.format(bytes.length) + " !");
                 return bytes;
             } catch (Exception ex) {
                 LoggerUtils.error("Download A File Failure,FileKey:" + fileKey + "!", ex);
@@ -41,13 +42,5 @@ public class DefaultDownloadFileServiceImpl implements DownloadFileService {
             }
         }
         return new byte[0];
-    }
-
-    static String humanReadable(int bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

@@ -1,6 +1,5 @@
 package com.seven.cow.data.authorization.initization;
 
-import com.seven.cow.data.authorization.constants.Table;
 import com.seven.cow.data.authorization.mapper.DataObjectMapper;
 import com.seven.cow.data.authorization.properties.DataAuthorizationProperties;
 import org.springframework.boot.CommandLineRunner;
