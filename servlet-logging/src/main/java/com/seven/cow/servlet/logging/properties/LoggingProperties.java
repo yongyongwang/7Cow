@@ -29,6 +29,11 @@ public class LoggingProperties {
     private List<String> excludePatterns;
 
     /**
+     * 只记录日志请求表达式列表
+     */
+    private List<String> includePatterns;
+
+    /**
      * 日志打印 filter 排序号
      */
     private int order = 0;
@@ -60,6 +65,14 @@ public class LoggingProperties {
 
     public void setExcludePatterns(List<String> excludePatterns) {
         this.excludePatterns = excludePatterns;
+    }
+
+    public List<String> getIncludePatterns() {
+        return includePatterns;
+    }
+
+    public void setIncludePatterns(List<String> includePatterns) {
+        this.includePatterns = includePatterns;
     }
 
     public int getOrder() {
