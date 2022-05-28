@@ -19,6 +19,11 @@ public class LoggingProperties {
     private Boolean print = true;
 
     /**
+     * 拦截模式 默认filter，拦截请求 log 模式是指日志打印的拦截
+     */
+    private Mode mode = Mode.filter;
+
+    /**
      * aop 打印controller出入参
      */
     private Boolean aopPrint = true;
@@ -49,6 +54,14 @@ public class LoggingProperties {
 
     public void setPrint(Boolean print) {
         this.print = print;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     public Boolean getAopPrint() {

@@ -1,6 +1,7 @@
 package com.seven.cow.servlet.logging.filters;
 
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
+import com.seven.cow.servlet.logging.properties.Mode;
 import com.seven.cow.servlet.logging.service.ResponseFilterService;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
@@ -20,10 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
 
@@ -106,20 +104,24 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     }
 
     protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
-        String requestPath = httpServletRequest.getRequestURI();
-        List<String> includePatterns = loggingProperties.getIncludePatterns();
-        List<String> excludePatterns = this.loggingProperties.getExcludePatterns();
-        if (CollectionUtils.isEmpty(includePatterns)) {
-            if (CollectionUtils.isEmpty(excludePatterns)) {
-                excludePatterns = new ArrayList<>(0);
+        if (Mode.filter.equals(loggingProperties.getMode())) {
+            String requestPath = httpServletRequest.getRequestURI();
+            List<String> includePatterns = loggingProperties.getIncludePatterns();
+            List<String> excludePatterns = this.loggingProperties.getExcludePatterns();
+            if (CollectionUtils.isEmpty(includePatterns)) {
+                if (CollectionUtils.isEmpty(excludePatterns)) {
+                    excludePatterns = Collections.emptyList();
+                }
+                return excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
+            } else {
+                if (!CollectionUtils.isEmpty(excludePatterns)) {
+                    return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath))
+                            && excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
+                }
+                return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath));
             }
-            return excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
         } else {
-            if (!CollectionUtils.isEmpty(excludePatterns)) {
-                return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath))
-                        && excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
-            }
-            return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath));
+            return super.shouldNotFilter(httpServletRequest);
         }
     }
 
