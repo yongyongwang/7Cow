@@ -2,7 +2,7 @@ package com.seven.cow.servlet.upload.filters;
 
 import com.seven.cow.servlet.upload.properties.UploadProperties;
 import com.seven.cow.servlet.upload.service.UploadFileService;
-import com.seven.cow.servlet.upload.service.impl.FileInfo;
+import com.seven.cow.spring.boot.autoconfigure.entity.file.FileInfo;
 import org.springframework.core.Ordered;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
