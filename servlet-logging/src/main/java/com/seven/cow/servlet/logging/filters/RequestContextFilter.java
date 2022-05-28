@@ -2,6 +2,7 @@ package com.seven.cow.servlet.logging.filters;
 
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.servlet.logging.service.ResponseFilterService;
+import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
@@ -57,7 +58,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
         List<String> parameters = new ArrayList<>();
         while (parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
-            String parameterValue = String.join(",", Arrays.asList(httpServletRequest.getParameterValues(parameterName)));
+            String parameterValue = String.join(SPLIT_COMMA, Arrays.asList(httpServletRequest.getParameterValues(parameterName)));
             parameters.add((parameterName + "=" + parameterValue));
             CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, parameterValue);
         }
