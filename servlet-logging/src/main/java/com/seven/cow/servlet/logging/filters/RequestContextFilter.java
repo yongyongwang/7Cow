@@ -79,7 +79,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             cachingResponseWrapper.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
-            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> info("rest process exception:", CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> info((Throwable) CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getStatus());
             rtnValue = responseFilterService.handle(rspStatus.value(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
@@ -99,9 +99,9 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
         }
     }
 
-    private void info(String message, Throwable ex) {
+    private void info(Throwable ex) {
         if (loggingProperties.getPrint()) {
-            LoggerUtils.info(message, ex);
+            LoggerUtils.info("rest process exception:", ex);
         }
     }
 
