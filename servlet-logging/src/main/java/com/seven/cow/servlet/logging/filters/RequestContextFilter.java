@@ -106,13 +106,17 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
         String requestPath = httpServletRequest.getRequestURI();
         List<String> includePatterns = loggingProperties.getIncludePatterns();
+        List<String> excludePatterns = this.loggingProperties.getExcludePatterns();
         if (CollectionUtils.isEmpty(includePatterns)) {
-            List<String> excludePatterns = this.loggingProperties.getExcludePatterns();
             if (CollectionUtils.isEmpty(excludePatterns)) {
                 excludePatterns = new ArrayList<>(0);
             }
             return excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
         } else {
+            if (!CollectionUtils.isEmpty(excludePatterns)) {
+                return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath))
+                        && excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
+            }
             return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath));
         }
     }
