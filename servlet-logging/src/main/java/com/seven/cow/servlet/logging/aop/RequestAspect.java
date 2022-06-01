@@ -41,10 +41,13 @@ public class RequestAspect {
     @Around("getMappingPoint() || postMappingPoint() || requestMappingPoint()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         boolean isLog = CurrentContext.take(Cants.X_CURRENT_REQUEST_LOGGING, false);
+        String clazz = point.getSignature().getDeclaringTypeName();
+        String method = point.getSignature().getName();
+
         StopWatch stopWatch = new StopWatch();
         if (isLog) {
             stopWatch.start();
-            LoggerUtils.info("------ > Rest Input: " + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs()).filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse || o instanceof MultipartFile || o instanceof MultipartFile[])).map(o -> {
+            LoggerUtils.info("------ > Rest Invoke " + clazz + Cants.SPLIT_POINT + method + " Input: " + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs()).filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse || o instanceof MultipartFile || o instanceof MultipartFile[])).map(o -> {
                 try {
                     return objectMapper.writeValueAsString(o);
                 } catch (JsonProcessingException e) {
@@ -56,7 +59,7 @@ public class RequestAspect {
         Object result = point.proceed();
         if (isLog) {
             stopWatch.stop();
-            LoggerUtils.info("< ------ Rest Output: " + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
+            LoggerUtils.info("< ------ Rest Invoke " + clazz + Cants.SPLIT_POINT + method + " Output: " + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
         }
         return result;
     }

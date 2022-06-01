@@ -4,6 +4,7 @@ public final class Cants {
 
     public final static String SPLIT_COLON = ":";
     public final static String SPLIT_COMMA = ",";
+    public final static String SPLIT_POINT = ".";
     public final static String SPLIT_SEMICOLON = ";";
     public final static String STRING_EMPTY = "";
 
