@@ -95,7 +95,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     private void info(String requestPath, String message) {
         if (loggingProperties.getPrint()) {
             if (Mode.log.equals(loggingProperties.getMode())) {
-                if (matchRequest(requestPath)) {
+                if (!matchRequest(requestPath)) {
                     LoggerUtils.info(message);
                 }
                 return;
