@@ -47,7 +47,7 @@ public class RequestAspect {
         StopWatch stopWatch = new StopWatch();
         if (isLog) {
             stopWatch.start();
-            LoggerUtils.info("------ > Rest Invoke " + clazz + Cants.SPLIT_POINT + method + " Input: \n\t" + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs()).filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse || o instanceof MultipartFile || o instanceof MultipartFile[])).map(o -> {
+            LoggerUtils.info("\n\t------ > Rest Invoke " + clazz + Cants.SPLIT_POINT + method + " Input: \n\t" + ((null == point.getArgs()) ? "null" : Arrays.stream(point.getArgs()).filter(o -> !(o instanceof HttpServletRequest || o instanceof HttpServletResponse || o instanceof MultipartFile || o instanceof MultipartFile[])).map(o -> {
                 try {
                     return objectMapper.writeValueAsString(o);
                 } catch (JsonProcessingException e) {
@@ -59,7 +59,7 @@ public class RequestAspect {
         Object result = point.proceed();
         if (isLog) {
             stopWatch.stop();
-            LoggerUtils.info("< ------ Rest Invoke " + clazz + Cants.SPLIT_POINT + method + " Output: \n\t" + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
+            LoggerUtils.info("\n\t< ------ Rest Invoke " + clazz + Cants.SPLIT_POINT + method + " Output: \n\t" + ((null == result) ? "null" : objectMapper.writeValueAsString(result)) + "   method cost: " + stopWatch.getTotalTimeMillis());
         }
         return result;
     }
