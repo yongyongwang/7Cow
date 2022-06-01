@@ -3,6 +3,7 @@ package com.seven.cow.servlet.logging.filters;
 import com.seven.cow.servlet.logging.properties.LoggingProperties;
 import com.seven.cow.servlet.logging.properties.Mode;
 import com.seven.cow.servlet.logging.service.ResponseFilterService;
+import com.seven.cow.spring.boot.autoconfigure.constant.Cants;
 import com.seven.cow.spring.boot.autoconfigure.util.CurrentContext;
 import com.seven.cow.spring.boot.autoconfigure.util.DataSizeUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
+import static com.seven.cow.spring.boot.autoconfigure.constant.Cants.*;
 
 public class RequestContextFilter extends OncePerRequestFilter implements Ordered {
 
@@ -39,14 +40,14 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String requestUrl = httpServletRequest.getRequestURL().toString();
         String queryString = httpServletRequest.getQueryString();
-        String requestPath = httpServletRequest.getRequestURI();
+        boolean isLog = CurrentContext.take(Cants.X_CURRENT_REQUEST_LOGGING, false);
         if (!StringUtils.isEmpty(queryString)) {
             queryString = URLDecoder.decode(queryString, httpServletRequest.getCharacterEncoding());
             requestUrl += "?" + queryString;
         }
         String method = httpServletRequest.getMethod();
-        info(requestPath, ">>>>>> > Begin RequestURL: " + requestUrl);
-        info(requestPath, "------ > Request Method: " + method);
+        info(isLog, ">>>>>> > Begin RequestURL: " + requestUrl);
+        info(isLog, "------ > Request Method: " + method);
 
         // region 读取请求参数
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
@@ -68,9 +69,9 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
 
         byte[] reqBytes = cachingRequestWrapper.getContentAsByteArray();
         CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
-        VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> info(requestPath, "------ > Request Parameters: " + String.join("&", parameters)));
+        VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> info(isLog, "------ > Request Parameters: " + String.join("&", parameters)));
         String payload = new String(reqBytes, cachingRequestWrapper.getCharacterEncoding());
-        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> info(requestPath, "------ > Request Payload(" + DataSizeUtil.format(reqBytes.length) + "): " + payload));
+        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> info(isLog, "------ > Request Payload(" + DataSizeUtil.format(reqBytes.length) + "): " + payload));
         try {
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } catch (Throwable ex) {
@@ -78,35 +79,40 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             cachingResponseWrapper.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
-            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> error(requestPath, (Throwable) CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> error(CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getStatus());
             rtnValue = responseFilterService.handle(rspStatus.value(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            info(requestPath, "< ------ Response(" + (loggingProperties.isAlwaysOk() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
-            info(requestPath, "< <<<<<< End RequestURL: " + requestUrl);
+            info(isLog, "< ------ Response(" + (loggingProperties.isAlwaysOk() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
+            info(isLog, "< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }
 
     }
 
-    private void info(String requestPath, String message) {
-        if (loggingProperties.getPrint()) {
-            if (Mode.log.equals(loggingProperties.getMode())) {
-                if (!matchRequest(requestPath)) {
-                    LoggerUtils.info(message);
-                }
-                return;
-            }
+    private void info(boolean isLog, String message) {
+        if (loggingProperties.getPrint() && isLog) {
             LoggerUtils.info(message);
         }
     }
 
-    private void error(String requestPath, Throwable ex) {
+    private void error(Throwable ex) {
         if (loggingProperties.getPrint()) {
             LoggerUtils.error("rest process exception:", ex);
+        }
+    }
+
+    protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
+        String requestPath = httpServletRequest.getRequestURI();
+        boolean isMatchRequest = matchRequest(requestPath);
+        CurrentContext.set(Cants.X_CURRENT_REQUEST_LOGGING, !isMatchRequest);
+        if (Mode.filter.equals(loggingProperties.getMode())) {
+            return isMatchRequest;
+        } else {
+            return super.shouldNotFilter(httpServletRequest);
         }
     }
 
@@ -120,19 +126,9 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             return excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
         } else {
             if (!CollectionUtils.isEmpty(excludePatterns)) {
-                return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath))
-                        && excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
+                return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath)) && excludePatterns.stream().anyMatch(pattern -> matcher.match(pattern, requestPath));
             }
             return includePatterns.stream().noneMatch(pattern -> matcher.match(pattern, requestPath));
-        }
-    }
-
-    protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
-        if (Mode.filter.equals(loggingProperties.getMode())) {
-            String requestPath = httpServletRequest.getRequestURI();
-            return matchRequest(requestPath);
-        } else {
-            return super.shouldNotFilter(httpServletRequest);
         }
     }
 

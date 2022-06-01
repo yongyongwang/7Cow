@@ -1,6 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
-import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
+import com.seven.cow.spring.boot.autoconfigure.constant.Cants;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ResponsePagingCmd<T> extends ResponseCmd<List<T>> {
     }
 
     public static <T> ResponsePagingCmd<T> ok(List<T> data, int total) {
-        return (ResponsePagingCmd<T>) new ResponsePagingCmd<T>().total(total).data(data).code(Errors.SUCCESS.getErrorCode()).message(Errors.SUCCESS.getErrorMsg()).state(Conts.REQUEST_OK);
+        return (ResponsePagingCmd<T>) new ResponsePagingCmd<T>().total(total).data(data).code(Errors.SUCCESS.getErrorCode()).message(Errors.SUCCESS.getErrorMsg()).state(Cants.REQUEST_OK);
     }
 
 }

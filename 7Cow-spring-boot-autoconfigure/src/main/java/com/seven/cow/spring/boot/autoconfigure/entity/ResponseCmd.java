@@ -1,6 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
-import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
+import com.seven.cow.spring.boot.autoconfigure.constant.Cants;
 
 import java.beans.Transient;
 
@@ -51,7 +51,7 @@ public class ResponseCmd<T> {
     }
 
     public static <T> ResponseCmd<T> ok(T data) {
-        return new ResponseCmd<T>().code(Errors.SUCCESS.getErrorCode()).message(Errors.SUCCESS.getErrorMsg()).state(Conts.REQUEST_OK).data(data);
+        return new ResponseCmd<T>().code(Errors.SUCCESS.getErrorCode()).message(Errors.SUCCESS.getErrorMsg()).state(Cants.REQUEST_OK).data(data);
     }
 
     public static <T> ResponseCmd<T> ok() {
@@ -63,7 +63,7 @@ public class ResponseCmd<T> {
     }
 
     private static <T> ResponseCmd<T> fail(String code, String message) {
-        return new ResponseCmd<T>().state(Conts.REQUEST_FAIL).code(code).message(message);
+        return new ResponseCmd<T>().state(Cants.REQUEST_FAIL).code(code).message(message);
     }
 
     @SuppressWarnings("rawtypes")
@@ -74,6 +74,6 @@ public class ResponseCmd<T> {
 
     @Transient
     public Boolean isOk() {
-        return Conts.REQUEST_OK.equalsIgnoreCase(this.state);
+        return Cants.REQUEST_OK.equalsIgnoreCase(this.state);
     }
 }

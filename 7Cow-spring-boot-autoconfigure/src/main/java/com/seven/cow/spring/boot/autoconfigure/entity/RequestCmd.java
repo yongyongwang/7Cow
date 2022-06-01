@@ -1,6 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.entity;
 
-import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
+import com.seven.cow.spring.boot.autoconfigure.constant.Cants;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,9 +84,9 @@ public class RequestCmd extends BasicRequest {
 
     public String getAsc() {
         if (null != asc && !asc.isEmpty()) {
-            return asc.stream().distinct().map(value -> value + " asc").collect(Collectors.joining(Conts.SPLIT_COMMA));
+            return asc.stream().distinct().map(value -> value + " asc").collect(Collectors.joining(Cants.SPLIT_COMMA));
         }
-        return Conts.STRING_EMPTY;
+        return Cants.STRING_EMPTY;
     }
 
     public void setAsc(List<String> asc) {
@@ -103,9 +103,9 @@ public class RequestCmd extends BasicRequest {
 
     public String getDesc() {
         if (null != desc && !desc.isEmpty()) {
-            return desc.stream().distinct().map(value -> value + " desc").collect(Collectors.joining(Conts.SPLIT_COMMA));
+            return desc.stream().distinct().map(value -> value + " desc").collect(Collectors.joining(Cants.SPLIT_COMMA));
         }
-        return Conts.STRING_EMPTY;
+        return Cants.STRING_EMPTY;
     }
 
     public void setDesc(List<String> desc) {

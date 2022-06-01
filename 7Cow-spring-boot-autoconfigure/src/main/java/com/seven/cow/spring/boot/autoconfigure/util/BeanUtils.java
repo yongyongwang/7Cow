@@ -1,6 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.util;
 
-import com.seven.cow.spring.boot.autoconfigure.constant.Conts;
+import com.seven.cow.spring.boot.autoconfigure.constant.Cants;
 import net.sf.cglib.beans.BeanCopier;
 import net.sf.cglib.beans.BeanMap;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public final class BeanUtils {
     private static final Map<String, BeanCopier> beanCopierMap = new ConcurrentHashMap<>();
 
     public static <S, T> void copyProperties(S source, T target) {
-        String key = source.getClass().getTypeName() + Conts.SPLIT_COLON + target.getClass().getTypeName();
+        String key = source.getClass().getTypeName() + Cants.SPLIT_COLON + target.getClass().getTypeName();
         BeanCopier beanCopier;
         if (beanCopierMap.containsKey(key)) {
             beanCopier = beanCopierMap.get(key);

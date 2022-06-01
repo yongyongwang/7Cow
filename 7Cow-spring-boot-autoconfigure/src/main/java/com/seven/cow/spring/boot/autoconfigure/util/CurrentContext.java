@@ -4,14 +4,8 @@ import com.alibaba.ttl.TransmittableThreadLocal;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.seven.cow.spring.boot.autoconfigure.constant.Conts.*;
+import static com.seven.cow.spring.boot.autoconfigure.constant.Cants.*;
 
-/**
- * @description: TODO
- * @author：EDY
- * @date: 2021/11/23 11:22
- * @version: 1.0
- */
 public final class CurrentContext extends ConcurrentHashMap<String, Object> {
 
     private CurrentContext() {
