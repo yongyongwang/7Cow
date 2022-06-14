@@ -29,21 +29,21 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
 
     private int status = 200;
 
-    private final boolean alwaysOk;
+    private final boolean alwaysNotFound;
 
     /**
      * Create a new ContentCachingResponseWrapper for the given servlet response.
      *
      * @param response the original servlet response
      */
-    public RequestCachingResponseWrapper(HttpServletResponse response, boolean alwaysOk) {
+    public RequestCachingResponseWrapper(HttpServletResponse response, boolean alwaysNotFound) {
         super(response);
-        this.alwaysOk = alwaysOk;
+        this.alwaysNotFound = alwaysNotFound;
     }
 
     @Override
     public int getStatus() {
-        return (this.alwaysOk && this.status != 200) ? 404 : this.status;
+        return (this.alwaysNotFound && this.status != 200) ? 404 : this.status;
     }
 
     public int getLocalStatus() {
@@ -64,7 +64,7 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
             throw new IllegalStateException();
         }
         this.status = sc;
-        if (!this.alwaysOk) {
+        if (!this.alwaysNotFound) {
             super.sendError(sc);
         }
     }
@@ -76,7 +76,7 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
             throw new IllegalStateException(msg);
         }
         this.status = sc;
-        if (!this.alwaysOk) {
+        if (!this.alwaysNotFound) {
             super.sendError(sc);
         }
     }
