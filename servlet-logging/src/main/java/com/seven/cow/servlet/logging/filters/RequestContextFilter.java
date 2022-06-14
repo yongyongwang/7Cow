@@ -85,7 +85,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
             VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> error(CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getStatus());
-            rtnValue = responseFilterService.handle(rspStatus.value(), rtnValue);
+            rtnValue = responseFilterService.handle(cachingResponseWrapper.getLocalStatus(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
