@@ -64,7 +64,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, parameterValue);
         }
         RequestCachingRequestWrapper cachingRequestWrapper = new RequestCachingRequestWrapper(httpServletRequest);
-        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysOk());
+        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysNotFound());
         // endregion 读取请求参数
 
         byte[] reqBytes = cachingRequestWrapper.getContentAsByteArray();
@@ -76,7 +76,11 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } catch (Throwable ex) {
             CurrentContext.set(X_CURRENT_REQUEST_EXCEPTION, ex);
-            cachingResponseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            if (!loggingProperties.isAlwaysNotFound()) {
+                cachingResponseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            } else {
+                cachingResponseWrapper.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
         } finally {
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
             VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> error(CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
@@ -86,7 +90,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            info(isLog, "< ------ Response(" + (loggingProperties.isAlwaysOk() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
+            info(isLog, "< ------ Response(" + (loggingProperties.isAlwaysNotFound() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
             info(isLog, "< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }

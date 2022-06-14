@@ -46,7 +46,7 @@ public class LoggingProperties {
     /**
      * 是否屏蔽异常请求状态码，默认不屏蔽 ,true:屏蔽只要不是200，都返回404
      */
-    private boolean alwaysOk = false;
+    private boolean alwaysNotFound = false;
 
     public Boolean getPrint() {
         return print;
@@ -96,11 +96,11 @@ public class LoggingProperties {
         this.order = order;
     }
 
-    public boolean isAlwaysOk() {
-        return alwaysOk;
+    public boolean isAlwaysNotFound() {
+        return alwaysNotFound;
     }
 
-    public void setAlwaysOk(boolean alwaysOk) {
-        this.alwaysOk = alwaysOk;
+    public void setAlwaysNotFound(boolean alwaysNotFound) {
+        this.alwaysNotFound = alwaysNotFound;
     }
 }
