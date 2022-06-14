@@ -36,7 +36,7 @@
         <skipTests>true</skipTests>
         <spring.boot.version>2.3.12.RELEASE</spring.boot.version>
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
-        <spring.alibaba.cloud.version>2.2.7.RELEASE</spring.alibaba.cloud.version>
+        <spring.alibaba.cloud.version>2.2.6.RELEASE</spring.alibaba.cloud.version>
         <fastjson.version>1.2.83</fastjson.version>
         <fastjson2.version>2.0.7</fastjson2.version>
         <transmittable.threal.local.version>2.12.6</transmittable.threal.local.version>

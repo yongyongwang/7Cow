@@ -64,7 +64,7 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
             throw new IllegalStateException();
         }
         this.status = sc;
-        if (!this.alwaysNotFound) {
+        if (this.alwaysNotFound) {
             super.sendError(sc);
         }
     }
@@ -76,8 +76,8 @@ class RequestCachingResponseWrapper extends org.springframework.web.util.Content
             throw new IllegalStateException(msg);
         }
         this.status = sc;
-        if (!this.alwaysNotFound) {
-            super.sendError(sc);
+        if (this.alwaysNotFound) {
+            super.sendError(sc, msg);
         }
     }
 
