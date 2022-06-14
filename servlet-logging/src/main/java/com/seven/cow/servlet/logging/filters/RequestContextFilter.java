@@ -76,7 +76,7 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } catch (Throwable ex) {
             CurrentContext.set(X_CURRENT_REQUEST_EXCEPTION, ex);
-            cachingResponseWrapper.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            cachingResponseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
             VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> error(CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
