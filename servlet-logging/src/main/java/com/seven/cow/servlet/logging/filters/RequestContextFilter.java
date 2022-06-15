@@ -64,29 +64,32 @@ public class RequestContextFilter extends OncePerRequestFilter implements Ordere
             CurrentContext.set(X_CURRENT_REQUEST_PARAMETERS + SPLIT_COLON + parameterName, parameterValue);
         }
         RequestCachingRequestWrapper cachingRequestWrapper = new RequestCachingRequestWrapper(httpServletRequest);
-        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysNotFound());
+        RequestCachingResponseWrapper cachingResponseWrapper = new RequestCachingResponseWrapper(httpServletResponse, loggingProperties.isAlwaysOk());
         // endregion 读取请求参数
 
         byte[] reqBytes = cachingRequestWrapper.getContentAsByteArray();
         CurrentContext.set(X_CURRENT_REQUEST_BODY, reqBytes);
-        VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1).handle(() -> info(isLog, "------ > Request Parameters: " + String.join("&", parameters)));
+        VUtils.choose(() -> !CollectionUtils.isEmpty(parameters) ? 0 : 1)
+                .handle(() -> info(isLog, "------ > Request Parameters: " + String.join("&", parameters)));
         String payload = new String(reqBytes, cachingRequestWrapper.getCharacterEncoding());
-        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1).handle(() -> info(isLog, "------ > Request Payload(" + DataSizeUtil.format(reqBytes.length) + "): " + payload));
+        VUtils.choose(() -> !StringUtils.isEmpty(payload) ? 0 : 1)
+                .handle(() -> info(isLog, "------ > Request Payload(" + DataSizeUtil.format(reqBytes.length) + "): " + payload));
         try {
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } catch (Throwable ex) {
             CurrentContext.set(X_CURRENT_REQUEST_EXCEPTION, ex);
-            cachingResponseWrapper.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            cachingResponseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             byte[] rtnValue = cachingResponseWrapper.getContentAsByteArray();
-            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1).handle(() -> error(CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
+            VUtils.choose(() -> CurrentContext.existsKey(X_CURRENT_REQUEST_EXCEPTION) ? 0 : 1)
+                    .handle(() -> error(CurrentContext.take(X_CURRENT_REQUEST_EXCEPTION)));
             HttpStatus rspStatus = HttpStatus.valueOf(cachingResponseWrapper.getStatus());
             rtnValue = responseFilterService.handle(cachingResponseWrapper.getLocalStatus(), rtnValue);
             if (!httpServletResponse.isCommitted()) {
                 httpServletResponse.setStatus(rspStatus.value());
                 httpServletResponse.getOutputStream().write(rtnValue);
             }
-            info(isLog, "< ------ Response(" + (loggingProperties.isAlwaysNotFound() ? cachingResponseWrapper.getLocalStatus() : rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
+            info(isLog, "< ------ Response(" + (rspStatus.value()) + "|" + rspStatus.getReasonPhrase() + ") Data(" + DataSizeUtil.format(rtnValue.length) + "): " + new String(rtnValue, cachingRequestWrapper.getCharacterEncoding()));
             info(isLog, "< <<<<<< End RequestURL: " + requestUrl);
             CurrentContext.remove();
         }
