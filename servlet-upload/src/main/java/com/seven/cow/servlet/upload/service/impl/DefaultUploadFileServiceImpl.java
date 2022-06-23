@@ -1,10 +1,9 @@
 package com.seven.cow.servlet.upload.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seven.cow.servlet.upload.service.UploadFileService;
 import com.seven.cow.spring.boot.autoconfigure.entity.ResponseCmd;
 import com.seven.cow.spring.boot.autoconfigure.entity.file.FileInfo;
+import com.seven.cow.spring.boot.autoconfigure.util.JSONUtil;
 import com.seven.cow.spring.boot.autoconfigure.util.LoggerUtils;
 import org.springframework.util.FileCopyUtils;
 
@@ -19,8 +18,6 @@ import java.io.IOException;
  * @version: 1.0
  */
 public class DefaultUploadFileServiceImpl implements UploadFileService {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public FileInfo upload(byte[] content, String storeAddress) {
@@ -42,12 +39,7 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
         // Check saveDirectory is writable
         if (!dir.canWrite())
             throw new IllegalArgumentException("Not writable: " + storeAddress);
-        String fInfo = null;
-        try {
-            fInfo = objectMapper.writeValueAsString(fileInfo);
-        } catch (JsonProcessingException e) {
-            LoggerUtils.error("cast to json exception:", e);
-        }
+        String fInfo = JSONUtil.toJson(fileInfo);
         try (FileOutputStream outputStream = new FileOutputStream(storeAddress + "/" + fileInfo.key())) {
             FileCopyUtils.copy(content, outputStream);
             LoggerUtils.info("Upload a file successful:" + fInfo);
@@ -59,12 +51,7 @@ public class DefaultUploadFileServiceImpl implements UploadFileService {
 
     @Override
     public byte[] writeResponseInfo(FileInfo fileInfo) {
-        try {
-            return objectMapper.writeValueAsBytes(ResponseCmd.ok(fileInfo));
-        } catch (JsonProcessingException e) {
-            LoggerUtils.error("cast to json exception:", e);
-        }
-        return new byte[0];
+        return JSONUtil.toJsonAsBytes(ResponseCmd.ok(fileInfo));
     }
 
 }

@@ -6,7 +6,7 @@
 
     <groupId>com.github.yongyongwang</groupId>
     <artifactId>7Cow</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3</version>
     <modules>
         <module>7Cow-spring-boot-starter</module>
         <module>7Cow-spring-boot-autoconfigure</module>

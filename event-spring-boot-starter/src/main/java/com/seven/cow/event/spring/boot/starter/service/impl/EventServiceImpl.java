@@ -1,5 +1,6 @@
 package com.seven.cow.event.spring.boot.starter.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.seven.cow.event.spring.boot.starter.service.EventRunnable;
 import com.seven.cow.event.spring.boot.starter.service.EventService;
 import com.seven.cow.event.spring.boot.starter.util.EventUtils;
@@ -22,7 +23,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public <T> void publish(String eventCode, Object message, EventMsgTypeRef<T> messageType) {
+    public <T> void publish(String eventCode, Object message, TypeReference<T> messageType) {
         publish(eventCode, message, messageType.getType().getTypeName(), true);
     }
 
