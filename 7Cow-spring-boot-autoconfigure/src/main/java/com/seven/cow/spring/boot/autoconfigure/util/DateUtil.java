@@ -14,7 +14,7 @@ import static java.time.temporal.ChronoField.*;
 /**
  * 日期工具类
  */
-public class DateUtil {
+public final class DateUtil {
     private static final String PATTERN_DATETIME = com.seven.cow.spring.boot.autoconfigure.util.DateTimeFormatter.DATETIME_PATTERN;
     private static final String PATTERN_DATE = com.seven.cow.spring.boot.autoconfigure.util.DateTimeFormatter.DATE_PATTERN;
     private static final String PATTERN_TIME = com.seven.cow.spring.boot.autoconfigure.util.DateTimeFormatter.TIME_PATTERN;

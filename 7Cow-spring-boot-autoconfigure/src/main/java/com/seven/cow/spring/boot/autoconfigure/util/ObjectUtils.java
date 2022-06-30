@@ -4,7 +4,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 
-public class ObjectUtils extends org.springframework.util.ObjectUtils {
+public final class ObjectUtils extends org.springframework.util.ObjectUtils {
 
     /**
      * 判断对象为null

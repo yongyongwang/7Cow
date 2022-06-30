@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * json 工具类
  */
-public class JSONUtil {
+public final class JSONUtil {
 
 	/**
 	 * 将对象序列化成json字符串

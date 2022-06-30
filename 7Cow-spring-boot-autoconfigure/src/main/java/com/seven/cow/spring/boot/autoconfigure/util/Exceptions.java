@@ -10,7 +10,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 /**
  * 异常处理工具类
  */
-public class Exceptions {
+public final class Exceptions {
 
     /**
      * 抛出业务异常

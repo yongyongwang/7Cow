@@ -3,7 +3,7 @@ package com.seven.cow.spring.boot.autoconfigure.util;
 
 import java.text.DecimalFormat;
 
-public class DataSizeUtil {
+public final class DataSizeUtil {
 
     private static final String[] UNIT_NAMES = new String[]{"B", "KB", "MB", "GB", "TB", "PB", "EB"};
 
