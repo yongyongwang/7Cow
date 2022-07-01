@@ -7,6 +7,7 @@ public final class Cants {
     public final static String SPLIT_POINT = ".";
     public final static String SPLIT_SEMICOLON = ";";
     public final static String STRING_EMPTY = "";
+    public final static String SPACE = "";
 
     public final static String REQUEST_OK = "ok";
     public final static String REQUEST_FAIL = "fail";
