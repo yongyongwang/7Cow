@@ -2,6 +2,7 @@ package com.seven.cow.spring.boot.autoconfigure.util;
 
 import javax.crypto.Cipher;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -75,6 +76,43 @@ public final class RsaUtils {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(content);
+    }
+
+    /**
+     * 签名
+     *
+     * @param data       待签名数据
+     * @param privateKey 私钥
+     * @return 签名
+     */
+    public static String sign(byte[] data, PrivateKey privateKey) throws Exception {
+        byte[] keyBytes = privateKey.getEncoded();
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PrivateKey key = keyFactory.generatePrivate(keySpec);
+        Signature signature = Signature.getInstance("MD5withRSA");
+        signature.initSign(key);
+        signature.update(data);
+        return bytesToBase64(signature.sign());
+    }
+
+    /**
+     * 验签
+     *
+     * @param data      原始字符串
+     * @param publicKey 公钥
+     * @param sign      签名
+     * @return 是否验签通过
+     */
+    public static boolean verify(byte[] data, PublicKey publicKey, String sign) throws Exception {
+        byte[] keyBytes = publicKey.getEncoded();
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PublicKey key = keyFactory.generatePublic(keySpec);
+        Signature signature = Signature.getInstance("MD5withRSA");
+        signature.initVerify(key);
+        signature.update(data);
+        return signature.verify(sign.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
