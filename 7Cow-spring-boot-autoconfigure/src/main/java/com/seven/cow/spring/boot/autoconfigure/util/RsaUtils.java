@@ -112,7 +112,7 @@ public final class RsaUtils {
         Signature signature = Signature.getInstance("MD5withRSA");
         signature.initVerify(key);
         signature.update(data);
-        return signature.verify(sign.getBytes(StandardCharsets.UTF_8));
+        return signature.verify(base64ToBytes(sign));
     }
 
     /**
