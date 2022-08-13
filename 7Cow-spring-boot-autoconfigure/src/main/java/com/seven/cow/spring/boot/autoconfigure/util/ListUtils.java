@@ -1,5 +1,6 @@
 package com.seven.cow.spring.boot.autoconfigure.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,19 @@ public final class ListUtils {
                 .map(a -> list.stream().skip(a * max).limit(max)
                         .parallel().collect(Collectors.toList()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 合并list
+     *
+     * @param list 源list
+     * @param <T>  list 包含对象
+     * @return list
+     */
+    public static <T> List<T> combineList(List<List<T>> list) {
+        List<T> newList = list.stream().collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+        newList = newList.stream().distinct().collect(Collectors.toList());
+        return newList;
     }
 
     /**
