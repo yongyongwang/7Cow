@@ -10,12 +10,6 @@ import org.springframework.util.StreamUtils;
 import java.io.File;
 import java.io.FileInputStream;
 
-/**
- * @description: TODO
- * @author：EDY
- * @date: 2021/11/26 10:26
- * @version: 1.0
- */
 public class DefaultDownloadFileServiceImpl implements DownloadFileService {
 
     @Override

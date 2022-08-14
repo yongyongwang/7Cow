@@ -14,12 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * @description: TODO
- * @author：EDY
- * @date: 2021/11/26 9:04
- * @version: 1.0
- */
+
 public class FileDownloadFilter extends OncePerRequestFilter implements Ordered {
 
     @Resource

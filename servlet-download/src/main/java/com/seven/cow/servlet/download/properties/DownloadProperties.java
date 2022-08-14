@@ -2,12 +2,6 @@ package com.seven.cow.servlet.download.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * @description: TODO
- * @author：EDY
- * @date: 2021/11/26 9:00
- * @version: 1.0
- */
 @ConfigurationProperties(prefix = "servlet.download")
 public class DownloadProperties {
 
