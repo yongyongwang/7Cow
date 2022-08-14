@@ -12,12 +12,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @description: TODO
- * @author：EDY
- * @date: 2021/11/24 9:30
- * @version: 1.0
- */
 @Configuration
 @EnableConfigurationProperties(LoggingProperties.class)
 public class ServletLoggingAutoConfiguration {

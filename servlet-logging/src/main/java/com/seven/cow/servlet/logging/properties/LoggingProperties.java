@@ -4,12 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
-/**
- * @description: 日志打印配置
- * @author：EDY
- * @date: 2021/11/24 18:12
- * @version: 1.0
- */
 @ConfigurationProperties(prefix = "servlet.logging")
 public class LoggingProperties {
 
